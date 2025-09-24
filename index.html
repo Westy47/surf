@@ -109,6 +109,12 @@
             box-shadow: 0 0 0 1px var(--orange-dark);
         }
 
+        .command.focused {
+            background: rgba(255, 136, 0, 0.2);
+            box-shadow: 0 0 0 2px var(--orange);
+            outline: none;
+        }
+
         .key {
             display: inline-block;
             width: 2ch;
@@ -125,7 +131,8 @@
         }
 
         .command:hover .name,
-        .command.highlight .name {
+        .command.highlight .name,
+        .command.focused .name {
             color: var(--orange);
         }
 
@@ -351,19 +358,24 @@
 
         let currentQuery = '';
         let activeSuggestionIndex = -1;
+        let currentCommandIndex = -1;
+        let commandKeys = [];
 
         // Render only primary commands by default
         function renderCommands() {
             commands.innerHTML = '';
+            commandKeys = [];
             Object.entries(CONFIG.shortcuts).forEach(([key, shortcuts]) => {
                 // Show only the first (primary) shortcut for each key
                 const primaryShortcut = shortcuts[0];
                 const cmd = document.createElement('div');
-                cmd.className = shortcuts.length === 1 ? 'command primary' : 'command primary';
+                cmd.className = 'command';
                 cmd.innerHTML = `<span class="key">${key}</span><span class="name">${primaryShortcut.name}</span>`;
                 cmd.dataset.key = key;
                 cmd.dataset.index = 0;
+                cmd.tabIndex = 0; // Make focusable
                 commands.appendChild(cmd);
+                commandKeys.push(key);
             });
         }
 
@@ -444,22 +456,93 @@
             });
         }
 
+        // Navigation functions
+        function focusCommand(index) {
+            clearFocus();
+            if (index >= 0 && index < commandKeys.length) {
+                currentCommandIndex = index;
+                const key = commandKeys[index];
+                const cmd = document.querySelector(`[data-key="${key}"]`);
+                if (cmd) {
+                    cmd.classList.add('focused');
+                    cmd.focus();
+                }
+            }
+        }
+
+        function clearFocus() {
+            document.querySelectorAll('.command').forEach(cmd => {
+                cmd.classList.remove('focused');
+            });
+        }
+
+        function navigateCommands(direction) {
+            if (currentCommandIndex === -1) {
+                focusCommand(0);
+            } else {
+                let newIndex = currentCommandIndex + direction;
+                if (newIndex < 0) {
+                    newIndex = commandKeys.length - 1;
+                } else if (newIndex >= commandKeys.length) {
+                    newIndex = 0;
+                }
+                focusCommand(newIndex);
+            }
+        }
+
+        function executeCurrentCommand() {
+            if (currentCommandIndex >= 0) {
+                const key = commandKeys[currentCommandIndex];
+                const shortcuts = CONFIG.shortcuts[key];
+
+                if (shortcuts.length === 1) {
+                    // Single shortcut, execute directly
+                    execute(shortcuts[0].url);
+                } else {
+                    // Multiple shortcuts, show in search overlay
+                    openSearch();
+                    searchInput.value = key;
+                    currentQuery = key;
+                    const parsed = parseQuery(key);
+                    if (parsed && parsed.type === 'command') {
+                        highlightCommands(key);
+                        renderSuggestions(shortcuts);
+                    }
+                }
+            }
+        }
+
         // Event listeners
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closeSearch();
+                clearFocus();
+                currentCommandIndex = -1;
                 return;
             }
 
             if (!searchOverlay.classList.contains('open')) {
+                // Navigation on main interface
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    navigateCommands(e.shiftKey ? -1 : 1);
+                    return;
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    executeCurrentCommand();
+                    return;
+                }
+
                 // Open search on any character key
                 if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    clearFocus();
+                    currentCommandIndex = -1;
                     openSearch();
                     // Let the input event handle the character
                     return;
                 }
             } else {
-                // Handle navigation in search
+                // Handle navigation in search overlay
                 if (e.key === 'ArrowDown' || e.key === 'Tab') {
                     e.preventDefault();
                     if (suggestions.children.length > 0) {
