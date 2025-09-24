@@ -74,6 +74,76 @@
             --glow-primary: 0 0 15px rgba(170, 68, 255, 0.4);
         }
 
+        [data-theme="rose-pine"] {
+            --bg-primary: #191724;
+            --bg-secondary: #1f1d2e;
+            --primary: #ebbcba;
+            --primary-bright: #f6c177;
+            --primary-dim: #eb6f92;
+            --primary-dark: #31748f;
+            --glow-primary: 0 0 15px rgba(235, 188, 186, 0.4);
+        }
+
+        [data-theme="rose-pine-moon"] {
+            --bg-primary: #232136;
+            --bg-secondary: #2a273f;
+            --primary: #ea9a97;
+            --primary-bright: #f6c177;
+            --primary-dim: #eb6f92;
+            --primary-dark: #3e8fb0;
+            --glow-primary: 0 0 15px rgba(234, 154, 151, 0.4);
+        }
+
+        [data-theme="rose-pine-dawn"] {
+            --bg-primary: #faf4ed;
+            --bg-secondary: #fffaf3;
+            --primary: #d7827e;
+            --primary-bright: #ea9d34;
+            --primary-dim: #b4637a;
+            --primary-dark: #56949f;
+            --glow-primary: 0 0 15px rgba(215, 130, 126, 0.4);
+        }
+
+        [data-theme="catppuccin-latte"] {
+            --bg-primary: #eff1f5;
+            --bg-secondary: #e6e9ef;
+            --primary: #8839ef;
+            --primary-bright: #7287fd;
+            --primary-dim: #6c7086;
+            --primary-dark: #9ca0b0;
+            --glow-primary: 0 0 15px rgba(136, 57, 239, 0.4);
+        }
+
+        [data-theme="catppuccin-frappe"] {
+            --bg-primary: #303446;
+            --bg-secondary: #414559;
+            --primary: #ca9ee6;
+            --primary-bright: #f2d5cf;
+            --primary-dim: #a5adce;
+            --primary-dark: #626880;
+            --glow-primary: 0 0 15px rgba(202, 158, 230, 0.4);
+        }
+
+        [data-theme="catppuccin-macchiato"] {
+            --bg-primary: #24273a;
+            --bg-secondary: #363a4f;
+            --primary: #c6a0f6;
+            --primary-bright: #f0c6c6;
+            --primary-dim: #a5adcb;
+            --primary-dark: #5b6078;
+            --glow-primary: 0 0 15px rgba(198, 160, 246, 0.4);
+        }
+
+        [data-theme="catppuccin-mocha"] {
+            --bg-primary: #1e1e2e;
+            --bg-secondary: #313244;
+            --primary: #cba6f7;
+            --primary-bright: #f5c2e7;
+            --primary-dim: #a6adc8;
+            --primary-dark: #585b70;
+            --glow-primary: 0 0 15px rgba(203, 166, 247, 0.4);
+        }
+
 
         body {
             background: var(--bg-primary);
@@ -117,6 +187,89 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            gap: 2rem;
+        }
+
+        /* Dynamic input display */
+        .input-display {
+            background: var(--bg-secondary);
+            border: 1px solid var(--primary-dark);
+            border-radius: 4px;
+            padding: 1.5rem;
+            max-width: 700px;
+            width: 90%;
+            box-shadow: var(--glow-primary);
+        }
+
+        .current-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .input-prompt {
+            color: var(--primary-bright);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .input-value {
+            color: var(--primary-bright);
+            font-family: inherit;
+        }
+
+        .input-cursor {
+            color: var(--primary);
+            animation: blink 1s infinite;
+            margin-left: 2px;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .multiple-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .choice-option {
+            background: var(--bg-primary);
+            border: 1px solid var(--primary-dark);
+            color: var(--primary-dim);
+            padding: 0.5rem 1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            font-size: 0.9rem;
+        }
+
+        .choice-option:hover,
+        .choice-option.active {
+            background: color-mix(in srgb, var(--primary) 15%, transparent);
+            border-color: var(--primary);
+            color: var(--primary-bright);
+            box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
+        }
+
+        .choice-option.selected {
+            background: color-mix(in srgb, var(--primary) 20%, transparent);
+            border-color: var(--primary);
+            color: var(--primary-bright);
+            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
+        }
+
+        .search-indicator {
+            color: var(--primary-dim);
+            font-style: italic;
+            padding: 0.5rem 1rem;
+            background: color-mix(in srgb, var(--primary) 8%, transparent);
+            border: 1px solid var(--primary-dark);
+            border-radius: 3px;
         }
 
         .commands-list {
@@ -139,16 +292,17 @@
 
         .command:hover {
             background: color-mix(in srgb, var(--primary) 10%, transparent);
+            box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
         }
 
         .command.highlight {
             background: color-mix(in srgb, var(--primary) 15%, transparent);
-            box-shadow: 0 0 0 1px var(--primary-dark);
+            box-shadow: 0 0 0 1px var(--primary-dark), 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
         }
 
         .command.focused {
             background: color-mix(in srgb, var(--primary) 20%, transparent);
-            box-shadow: 0 0 0 2px var(--primary);
+            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
             outline: none;
         }
 
@@ -207,92 +361,6 @@
             color: var(--primary-bright);
         }
 
-        /* Search overlay */
-        .search-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 14, 10, 0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            z-index: 100;
-        }
-
-        .search-overlay.open {
-            display: flex;
-        }
-
-        .search-prompt {
-            color: var(--orange);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .search-line {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .search-prefix {
-            color: var(--orange-bright);
-            margin-right: 0.5rem;
-        }
-
-        .search-input {
-            background: transparent;
-            border: none;
-            color: var(--orange-bright);
-            font-family: inherit;
-            font-size: 1.2rem;
-            outline: none;
-            width: 400px;
-            caret-color: var(--orange-bright);
-        }
-
-        .search-suggestions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.2rem;
-            max-width: 500px;
-        }
-
-        .suggestion {
-            padding: 0.5rem 1rem;
-            color: var(--orange-dim);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            background: transparent;
-            border: none;
-            font-family: inherit;
-            font-size: 0.9rem;
-            text-align: left;
-            display: flex;
-            align-items: center;
-        }
-
-        .suggestion:hover,
-        .suggestion.active {
-            color: var(--orange-bright);
-            background: rgba(255, 136, 0, 0.1);
-        }
-
-        .suggestion::before {
-            content: '>';
-            color: var(--orange);
-            margin-right: 0.5rem;
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .suggestion:hover::before,
-        .suggestion.active::before {
-            opacity: 1;
-        }
 
         /* Settings popup */
         .settings-overlay {
@@ -323,7 +391,7 @@
         }
 
         .settings-title {
-            color: var(--orange-bright);
+            color: var(--primary-bright);
             font-size: 1.2rem;
             margin-bottom: 1.5rem;
             text-align: center;
@@ -336,48 +404,129 @@
         }
 
         .settings-section h3 {
-            color: var(--orange);
+            color: var(--primary);
             font-size: 1rem;
             margin-bottom: 1rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
-        .theme-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.5rem;
+        /* Theme list with smooth animations */
+        .theme-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            max-height: 300px;
+            overflow-y: auto;
         }
 
         .theme-option {
-            padding: 1rem;
+            padding: 0.8rem 1.2rem;
             background: var(--bg-primary);
             border: 1px solid var(--primary-dark);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
             color: var(--primary-dim);
             font-family: inherit;
+            font-size: 0.9rem;
+            text-align: left;
+            cursor: pointer;
             outline: none;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: translateX(0);
+        }
+
+        .theme-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                color-mix(in srgb, var(--primary) 15%, transparent),
+                transparent
+            );
+            transition: left 0.5s ease;
+        }
+
+        .theme-option:hover::before,
+        .theme-option.active::before,
+        .theme-option:focus::before {
+            left: 100%;
         }
 
         .theme-option:hover,
-        .theme-option.active,
         .theme-option:focus {
             background: color-mix(in srgb, var(--primary) 10%, transparent);
             border-color: var(--primary);
-            color: var(--primary-bright);
-            box-shadow: var(--glow-primary);
+            color: var(--primary);
+            transform: translateX(4px);
+            box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
         }
 
-        .theme-option:focus {
-            box-shadow: 0 0 0 2px var(--primary);
+        .theme-option.active {
+            background: color-mix(in srgb, var(--primary) 20%, transparent);
+            border-color: var(--primary);
+            color: var(--primary-bright);
+            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
+            transform: translateX(8px) scale(1.02);
+        }
+
+        .theme-option.active::after {
+            content: '●';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-bright);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
+            50% { opacity: 0.6; transform: translateY(-50%) scale(1.2); }
+        }
+
+        /* Theme navigation animations */
+        .settings-popup {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .settings-overlay.open .settings-popup {
+            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Theme transition animation */
+        body {
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        * {
+            transition:
+                background-color 0.4s ease,
+                border-color 0.4s ease,
+                color 0.4s ease,
+                box-shadow 0.4s ease;
         }
 
         .settings-close {
             margin-top: 1.5rem;
             text-align: center;
-            color: var(--orange-dim);
+            color: var(--primary-dim);
             font-size: 0.9rem;
         }
 
@@ -410,6 +559,16 @@
 
     <!-- Commands section - centered -->
     <div class="commands-section">
+        <!-- Dynamic input/choices display -->
+        <div class="input-display" id="inputDisplay" style="display: none;">
+            <div class="current-input">
+                <span class="input-prompt">></span>
+                <span class="input-value" id="inputValue"></span>
+                <span class="input-cursor">_</span>
+            </div>
+            <div class="multiple-choices" id="multipleChoices"></div>
+        </div>
+
         <div class="commands-list" id="commands"></div>
     </div>
 
@@ -419,15 +578,6 @@
         <div class="keys-list" id="keysList"></div>
     </div>
 
-    <!-- Search overlay -->
-    <div class="search-overlay" id="searchOverlay">
-        <div class="search-prompt">Enter command or search term:</div>
-        <div class="search-line">
-            <span class="search-prefix">></span>
-            <input type="text" class="search-input" id="searchInput" autocomplete="off" spellcheck="false">
-        </div>
-        <div class="search-suggestions" id="suggestions"></div>
-    </div>
 
     <!-- Settings overlay -->
     <div class="settings-overlay" id="settingsOverlay">
@@ -435,13 +585,20 @@
             <div class="settings-title">Settings</div>
 
             <div class="settings-section">
-                <h3>Theme</h3>
-                <div class="theme-grid" id="themeGrid">
+                <h3>Theme Selection</h3>
+                <div class="theme-list" id="themeList">
                     <button class="theme-option" data-theme="drake" tabindex="0">Drake Orange</button>
                     <button class="theme-option" data-theme="green" tabindex="0">Matrix Green</button>
                     <button class="theme-option" data-theme="blue" tabindex="0">Cyber Blue</button>
                     <button class="theme-option" data-theme="red" tabindex="0">Alert Red</button>
                     <button class="theme-option" data-theme="purple" tabindex="0">Neon Purple</button>
+                    <button class="theme-option" data-theme="rose-pine" tabindex="0">Rosé Pine</button>
+                    <button class="theme-option" data-theme="rose-pine-moon" tabindex="0">Rosé Pine Moon</button>
+                    <button class="theme-option" data-theme="rose-pine-dawn" tabindex="0">Rosé Pine Dawn</button>
+                    <button class="theme-option" data-theme="catppuccin-latte" tabindex="0">Catppuccin Latte</button>
+                    <button class="theme-option" data-theme="catppuccin-frappe" tabindex="0">Catppuccin Frappé</button>
+                    <button class="theme-option" data-theme="catppuccin-macchiato" tabindex="0">Catppuccin Macchiato</button>
+                    <button class="theme-option" data-theme="catppuccin-mocha" tabindex="0">Catppuccin Mocha</button>
                 </div>
             </div>
 
@@ -518,18 +675,19 @@
 
         // Elements
         const commands = document.getElementById('commands');
-        const searchOverlay = document.getElementById('searchOverlay');
-        const searchInput = document.getElementById('searchInput');
-        const suggestions = document.getElementById('suggestions');
         const selectedInfo = document.getElementById('selectedInfo');
         const keysList = document.getElementById('keysList');
         const settingsOverlay = document.getElementById('settingsOverlay');
-        const themeGrid = document.getElementById('themeGrid');
+        const themeList = document.getElementById('themeList');
+        const inputDisplay = document.getElementById('inputDisplay');
+        const inputValue = document.getElementById('inputValue');
+        const multipleChoices = document.getElementById('multipleChoices');
 
         let currentQuery = '';
         let activeSuggestionIndex = -1;
         let currentCommandIndex = -1;
         let commandKeys = [];
+        let isInputMode = false;
 
         // Settings management
         const SETTINGS_KEY = 'surf-navigator-settings';
@@ -569,7 +727,7 @@
 
         // Update theme buttons visual state
         function updateThemeButtons() {
-            themeGrid.querySelectorAll('.theme-option').forEach(btn => {
+            themeList.querySelectorAll('.theme-option').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.theme === settings.theme);
             });
         }
@@ -650,50 +808,80 @@
         function openSettings() {
             settingsOverlay.classList.add('open');
             updateThemeButtons();
+            // Focus the first theme option for keyboard navigation
+            const firstTheme = themeList.querySelector('.theme-option');
+            if (firstTheme) {
+                setTimeout(() => firstTheme.focus(), 100);
+            }
         }
 
         function closeSettings() {
             settingsOverlay.classList.remove('open');
         }
 
-        // Handle suggestions
-        function renderSuggestions(shortcuts) {
-            suggestions.innerHTML = '';
+
+        // Input display control
+        function showInputDisplay() {
+            isInputMode = true;
+            inputDisplay.style.display = 'block';
+            updateInputDisplay();
+        }
+
+        function hideInputDisplay() {
+            isInputMode = false;
+            inputDisplay.style.display = 'none';
+            currentQuery = '';
+            activeSuggestionIndex = -1;
+            multipleChoices.innerHTML = '';
+            clearHighlights();
+        }
+
+        function updateInputDisplay() {
+            inputValue.textContent = currentQuery;
+
+            const parsed = parseQuery(currentQuery);
+            if (parsed && parsed.type === 'command' && parsed.shortcuts.length > 1) {
+                highlightCommands(parsed.key);
+                renderMultipleChoices(parsed.shortcuts, parsed.key);
+            } else if (parsed && parsed.type === 'search') {
+                clearHighlights();
+                multipleChoices.innerHTML = `<div class="search-indicator">Search: "${parsed.query}"</div>`;
+            } else {
+                clearHighlights();
+                multipleChoices.innerHTML = '';
+            }
+        }
+
+        function renderMultipleChoices(shortcuts, key) {
+            multipleChoices.innerHTML = '';
             shortcuts.forEach((shortcut, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'suggestion';
-                btn.textContent = shortcut.name;
-                btn.dataset.url = shortcut.url;
-                btn.dataset.index = index;
-                btn.addEventListener('click', () => {
+                const choice = document.createElement('button');
+                choice.className = 'choice-option';
+                choice.textContent = shortcut.name;
+                choice.dataset.index = index;
+                choice.dataset.url = shortcut.url;
+                choice.addEventListener('click', () => {
                     execute(shortcut.url);
-                    closeSearch();
+                    hideInputDisplay();
                 });
-                suggestions.appendChild(btn);
+                multipleChoices.appendChild(choice);
             });
-            activeSuggestionIndex = 0;
-            updateActiveSuggestion();
+            updateActiveChoice();
         }
 
-        function updateActiveSuggestion() {
-            document.querySelectorAll('.suggestion').forEach((btn, index) => {
-                btn.classList.toggle('active', index === activeSuggestionIndex);
+        function updateActiveChoice() {
+            multipleChoices.querySelectorAll('.choice-option').forEach((choice, index) => {
+                choice.classList.toggle('selected', index === activeSuggestionIndex);
             });
         }
 
-        // Search overlay control
+        // Legacy functions for compatibility
         function openSearch() {
-            searchOverlay.classList.add('open');
-            searchInput.focus();
+            showInputDisplay();
         }
 
         function closeSearch() {
-            searchOverlay.classList.remove('open');
-            searchInput.value = '';
-            suggestions.innerHTML = '';
-            clearHighlights();
-            currentQuery = '';
-            activeSuggestionIndex = -1;
+            hideInputDisplay();
         }
 
         function clearHighlights() {
@@ -772,15 +960,18 @@
             if (e.key === 'Escape') {
                 if (settingsOverlay.classList.contains('open')) {
                     closeSettings();
-                } else {
+                } else if (isInputMode) {
                     closeSearch();
+                    clearFocus();
+                    currentCommandIndex = -1;
+                } else {
                     clearFocus();
                     currentCommandIndex = -1;
                 }
                 return;
             }
 
-            if (!searchOverlay.classList.contains('open') && !settingsOverlay.classList.contains('open')) {
+            if (!isInputMode && !settingsOverlay.classList.contains('open')) {
                 // Navigation on main interface
                 if (e.key === 'Tab') {
                     e.preventDefault();
@@ -792,34 +983,78 @@
                     return;
                 }
 
-                // Open search on any character key
+                // Open input mode on any character key
                 if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
                     clearFocus();
                     currentCommandIndex = -1;
-                    openSearch();
-                    // Let the input event handle the character
+                    currentQuery = e.key;
+                    showInputDisplay();
                     return;
                 }
-            } else if (searchOverlay.classList.contains('open')) {
-                // Handle navigation in search overlay
-                if (e.key === 'ArrowDown' || e.key === 'Tab') {
+            } else if (isInputMode) {
+                // Handle input mode
+                if (e.key === 'Backspace') {
                     e.preventDefault();
-                    if (suggestions.children.length > 0) {
-                        activeSuggestionIndex = (activeSuggestionIndex + 1) % suggestions.children.length;
-                        updateActiveSuggestion();
+                    currentQuery = currentQuery.slice(0, -1);
+                    if (currentQuery === '') {
+                        closeSearch();
+                    } else {
+                        updateInputDisplay();
                     }
-                } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
+                    return;
+                } else if (e.key === 'Enter') {
                     e.preventDefault();
-                    if (suggestions.children.length > 0) {
-                        activeSuggestionIndex = activeSuggestionIndex <= 0 ?
-                            suggestions.children.length - 1 : activeSuggestionIndex - 1;
-                        updateActiveSuggestion();
+                    const parsed = parseQuery(currentQuery);
+                    if (parsed) {
+                        if (parsed.type === 'command' && parsed.shortcuts.length > 1) {
+                            // Execute selected choice or first one
+                            const choiceIndex = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0;
+                            execute(parsed.shortcuts[choiceIndex].url);
+                        } else if (parsed.type === 'command') {
+                            execute(parsed.shortcuts[0].url);
+                        } else {
+                            // Search query
+                            const searchUrl = CONFIG.defaultSearchTemplate.replace('{}', encodeURIComponent(parsed.query));
+                            execute(searchUrl);
+                        }
                     }
+                    closeSearch();
+                    return;
+                } else if (e.key === 'Tab') {
+                    e.preventDefault();
+                    const choices = multipleChoices.querySelectorAll('.choice-option');
+                    if (choices.length > 0) {
+                        activeSuggestionIndex = e.shiftKey ?
+                            (activeSuggestionIndex <= 0 ? choices.length - 1 : activeSuggestionIndex - 1) :
+                            (activeSuggestionIndex + 1) % choices.length;
+                        updateActiveChoice();
+                    }
+                    return;
+                } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    e.preventDefault();
+                    currentQuery += e.key;
+                    activeSuggestionIndex = 0; // Reset selection
+                    updateInputDisplay();
+                    return;
                 }
             } else if (settingsOverlay.classList.contains('open')) {
                 // Handle navigation in settings
                 if (e.key === 'Tab') {
-                    // Let default Tab behavior work for theme buttons
+                    e.preventDefault();
+                    const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
+                    const focused = document.activeElement;
+                    const currentIndex = themeOptions.indexOf(focused);
+
+                    let nextIndex;
+                    if (e.shiftKey) {
+                        nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
+                    } else {
+                        nextIndex = currentIndex >= themeOptions.length - 1 ? 0 : currentIndex + 1;
+                    }
+
+                    if (themeOptions[nextIndex]) {
+                        themeOptions[nextIndex].focus();
+                    }
                     return;
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
@@ -827,63 +1062,29 @@
                     if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
                         applyTheme(focusedBtn.dataset.theme);
                     }
-                }
-            }
-        });
+                } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
+                    const focused = document.activeElement;
+                    const currentIndex = themeOptions.indexOf(focused);
 
-        searchInput.addEventListener('input', (e) => {
-            currentQuery = e.target.value;
-            const parsed = parseQuery(currentQuery);
-
-            if (!parsed) {
-                suggestions.innerHTML = '';
-                clearHighlights();
-                return;
-            }
-
-            if (parsed.type === 'command') {
-                // Show suggestions for this command
-                highlightCommands(parsed.key);
-                if (parsed.shortcuts.length > 1) {
-                    renderSuggestions(parsed.shortcuts);
-                } else {
-                    suggestions.innerHTML = '';
-                }
-            } else {
-                // It's a search query
-                clearHighlights();
-                suggestions.innerHTML = '';
-            }
-        });
-
-        searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const parsed = parseQuery(currentQuery);
-
-                if (!parsed) return;
-
-                if (parsed.type === 'command') {
-                    // Execute the selected command
-                    if (suggestions.children.length > 0 && activeSuggestionIndex >= 0) {
-                        const activeBtn = suggestions.children[activeSuggestionIndex];
-                        execute(activeBtn.dataset.url);
-                    } else if (parsed.shortcuts.length === 1) {
-                        // Single command, execute directly
-                        execute(parsed.shortcuts[0].url);
+                    let nextIndex;
+                    if (e.key === 'ArrowUp') {
+                        nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
+                    } else {
+                        nextIndex = currentIndex >= themeOptions.length - 1 ? 0 : currentIndex + 1;
                     }
-                } else {
-                    // Execute search
-                    const searchUrl = CONFIG.defaultSearchTemplate.replace('{}', encodeURIComponent(parsed.query));
-                    execute(searchUrl);
-                }
 
-                closeSearch();
+                    if (themeOptions[nextIndex]) {
+                        themeOptions[nextIndex].focus();
+                    }
+                }
             }
         });
+
 
         // Theme button event listeners
-        themeGrid.addEventListener('click', (e) => {
+        themeList.addEventListener('click', (e) => {
             const themeBtn = e.target.closest('.theme-option');
             if (themeBtn && themeBtn.dataset.theme) {
                 applyTheme(themeBtn.dataset.theme);
