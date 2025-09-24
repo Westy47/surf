@@ -190,39 +190,44 @@
             gap: 2rem;
         }
 
-        /* Dynamic input display */
-        .input-display {
-            background: var(--bg-secondary);
-            border: 1px solid var(--primary-dark);
-            border-radius: 4px;
-            padding: 1.5rem;
-            max-width: 700px;
-            width: 90%;
-            box-shadow: var(--glow-primary);
+        /* Input line - simple text at bottom of page */
+        .input-line {
+            padding: 1rem;
+            border-top: 1px solid var(--primary-dark);
+            text-align: center;
+            min-height: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .current-input {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-            font-size: 1.2rem;
+            color: var(--primary-bright);
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .key-item {
+            color: var(--primary-bright);
+            background: color-mix(in srgb, var(--primary) 15%, transparent);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
 
         .input-prompt {
             color: var(--primary-bright);
-            margin-right: 0.5rem;
-            font-weight: bold;
         }
 
         .input-value {
             color: var(--primary-bright);
-            font-family: inherit;
         }
 
         .input-cursor {
             color: var(--primary);
             animation: blink 1s infinite;
-            margin-left: 2px;
         }
 
         @keyframes blink {
@@ -230,10 +235,32 @@
             51%, 100% { opacity: 0; }
         }
 
-        .multiple-choices {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
+        /* Command input at top of commands list */
+        .command-input {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            color: var(--primary-bright);
+            font-size: 1.1rem;
+        }
+
+        /* Multiple choices - simple text lines */
+        .multiple-choices-list {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .choice-line {
+            padding: 0.3rem 0;
+            color: var(--primary-dim);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .choice-line:hover,
+        .choice-line.selected {
+            color: var(--primary-bright);
         }
 
         .choice-option {
@@ -510,17 +537,41 @@
             }
         }
 
-        /* Theme transition animation */
+        /* Enhanced theme transition animations */
         body {
-            transition: background-color 0.4s ease, color 0.4s ease;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * {
             transition:
-                background-color 0.4s ease,
-                border-color 0.4s ease,
-                color 0.4s ease,
-                box-shadow 0.4s ease;
+                background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Theme change flash effect */
+        body.theme-changing {
+            animation: themeFlash 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes themeFlash {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            15% {
+                opacity: 0.95;
+                transform: scale(0.998);
+            }
+            30% {
+                opacity: 1;
+                transform: scale(1.001);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .settings-close {
@@ -559,23 +610,22 @@
 
     <!-- Commands section - centered -->
     <div class="commands-section">
-        <!-- Dynamic input/choices display -->
-        <div class="input-display" id="inputDisplay" style="display: none;">
-            <div class="current-input">
-                <span class="input-prompt">></span>
-                <span class="input-value" id="inputValue"></span>
-                <span class="input-cursor">_</span>
-            </div>
-            <div class="multiple-choices" id="multipleChoices"></div>
+        <!-- Input at top of commands list -->
+        <div class="command-input">
+            <span class="input-prompt">></span>
+            <span class="input-value" id="inputValue"></span>
+            <span class="input-cursor">_</span>
         </div>
+
+        <!-- Multiple choices - simple lines above commands -->
+        <div class="multiple-choices-list" id="multipleChoicesList" style="display: none;"></div>
 
         <div class="commands-list" id="commands"></div>
     </div>
 
-    <!-- Available keys display -->
-    <div class="keys-info">
-        <div class="keys-title">Available Keys</div>
-        <div class="keys-list" id="keysList"></div>
+    <!-- Input status at bottom (replaces shortcut keys info) -->
+    <div class="input-line">
+        <div class="current-input" id="inputStatus">Select a command with Tab or type to search</div>
     </div>
 
 
@@ -676,12 +726,11 @@
         // Elements
         const commands = document.getElementById('commands');
         const selectedInfo = document.getElementById('selectedInfo');
-        const keysList = document.getElementById('keysList');
         const settingsOverlay = document.getElementById('settingsOverlay');
         const themeList = document.getElementById('themeList');
-        const inputDisplay = document.getElementById('inputDisplay');
         const inputValue = document.getElementById('inputValue');
-        const multipleChoices = document.getElementById('multipleChoices');
+        const inputStatus = document.getElementById('inputStatus');
+        const multipleChoicesList = document.getElementById('multipleChoicesList');
 
         let currentQuery = '';
         let activeSuggestionIndex = -1;
@@ -717,12 +766,35 @@
             }
         }
 
-        // Apply theme
-        function applyTheme(theme) {
-            document.body.setAttribute('data-theme', theme);
-            settings.theme = theme;
-            updateThemeButtons();
-            saveSettings();
+        // Apply theme with animation
+        function applyTheme(theme, fromUserSelection = false) {
+            if (fromUserSelection) {
+                // First close the modal
+                closeSettings();
+
+                // Then animate the theme change after modal closes
+                setTimeout(() => {
+                    // Add flash animation class
+                    document.body.classList.add('theme-changing');
+
+                    // Apply the new theme
+                    document.body.setAttribute('data-theme', theme);
+                    settings.theme = theme;
+                    updateThemeButtons();
+                    saveSettings();
+
+                    // Remove animation class after animation completes
+                    setTimeout(() => {
+                        document.body.classList.remove('theme-changing');
+                    }, 800);
+                }, 300); // Wait for modal close animation
+            } else {
+                // Direct theme application for initial load
+                document.body.setAttribute('data-theme', theme);
+                settings.theme = theme;
+                updateThemeButtons();
+                saveSettings();
+            }
         }
 
         // Update theme buttons visual state
@@ -748,19 +820,6 @@
                 commands.appendChild(cmd);
                 commandKeys.push(key);
             });
-            renderKeysList();
-        }
-
-        // Render available navigation keys
-        function renderKeysList() {
-            const navigationKeys = [
-                '<span class="key-item">Tab</span>: Next',
-                '<span class="key-item">Shift+Tab</span>: Previous',
-                '<span class="key-item">Enter</span>: Execute',
-                '<span class="key-item">Esc</span>: Clear',
-                '<span class="key-item">st</span>: Settings'
-            ];
-            keysList.innerHTML = navigationKeys.join(' • ');
         }
 
         // Update selected info display
@@ -773,6 +832,18 @@
                 selectedInfo.innerHTML = 'Select a command with Tab or type to search';
                 selectedInfo.className = 'no-selection';
             }
+        }
+
+        // Render available navigation keys
+        function renderKeysList() {
+            const navigationKeys = [
+                '<span class="key-item">Tab</span>: Next',
+                '<span class="key-item">Shift+Tab</span>: Previous',
+                '<span class="key-item">Enter</span>: Execute',
+                '<span class="key-item">Esc</span>: Clear',
+                '<span class="key-item">st</span>: Settings'
+            ];
+            inputStatus.innerHTML = navigationKeys.join(' • ');
         }
 
         // Parse query like in the old code
@@ -820,68 +891,84 @@
         }
 
 
-        // Input display control
-        function showInputDisplay() {
+        // Input display control - now always visible
+        function enterInputMode() {
             isInputMode = true;
-            inputDisplay.style.display = 'block';
             updateInputDisplay();
         }
 
-        function hideInputDisplay() {
+        function exitInputMode() {
             isInputMode = false;
-            inputDisplay.style.display = 'none';
             currentQuery = '';
             activeSuggestionIndex = -1;
-            multipleChoices.innerHTML = '';
+            multipleChoicesList.innerHTML = '';
+            multipleChoicesList.style.display = 'none';
             clearHighlights();
+            updateInputDisplay();
+            renderKeysList(); // Restore navigation keys display
         }
 
         function updateInputDisplay() {
-            inputValue.textContent = currentQuery;
+            inputValue.textContent = currentQuery || '';
 
             const parsed = parseQuery(currentQuery);
             if (parsed && parsed.type === 'command' && parsed.shortcuts.length > 1) {
                 highlightCommands(parsed.key);
                 renderMultipleChoices(parsed.shortcuts, parsed.key);
+                multipleChoicesList.style.display = 'block';
+                inputStatus.textContent = `Multiple options for '${parsed.key}' - use Tab/Shift+Tab to navigate, Enter to select`;
             } else if (parsed && parsed.type === 'search') {
                 clearHighlights();
-                multipleChoices.innerHTML = `<div class="search-indicator">Search: "${parsed.query}"</div>`;
+                multipleChoicesList.innerHTML = '';
+                multipleChoicesList.style.display = 'none';
+                inputStatus.textContent = `Search: "${parsed.query}" - press Enter to search`;
             } else {
                 clearHighlights();
-                multipleChoices.innerHTML = '';
+                multipleChoicesList.innerHTML = '';
+                multipleChoicesList.style.display = 'none';
+                if (currentQuery) {
+                    inputStatus.textContent = 'Type more or press Enter to search';
+                } else {
+                    inputStatus.textContent = 'Select a command with Tab or type to search';
+                }
             }
         }
 
         function renderMultipleChoices(shortcuts, key) {
-            multipleChoices.innerHTML = '';
+            multipleChoicesList.innerHTML = '';
             shortcuts.forEach((shortcut, index) => {
-                const choice = document.createElement('button');
-                choice.className = 'choice-option';
-                choice.textContent = shortcut.name;
+                const choice = document.createElement('div');
+                choice.className = 'choice-line';
+                choice.textContent = `${key}${index + 1}: ${shortcut.name}`;
                 choice.dataset.index = index;
                 choice.dataset.url = shortcut.url;
                 choice.addEventListener('click', () => {
                     execute(shortcut.url);
-                    hideInputDisplay();
+                    exitInputMode();
                 });
-                multipleChoices.appendChild(choice);
+                multipleChoicesList.appendChild(choice);
             });
+
+            // Set first option as selected if none is selected
+            if (activeSuggestionIndex < 0) {
+                activeSuggestionIndex = 0;
+            }
             updateActiveChoice();
         }
 
         function updateActiveChoice() {
-            multipleChoices.querySelectorAll('.choice-option').forEach((choice, index) => {
+            multipleChoicesList.querySelectorAll('.choice-line').forEach((choice, index) => {
                 choice.classList.toggle('selected', index === activeSuggestionIndex);
             });
         }
 
         // Legacy functions for compatibility
         function openSearch() {
-            showInputDisplay();
+            enterInputMode();
         }
 
         function closeSearch() {
-            hideInputDisplay();
+            exitInputMode();
         }
 
         function clearHighlights() {
@@ -942,14 +1029,13 @@
                     // Single shortcut, execute directly
                     execute(shortcuts[0].url);
                 } else {
-                    // Multiple shortcuts, show in search overlay
-                    openSearch();
-                    searchInput.value = key;
+                    // Multiple shortcuts, enter input mode
                     currentQuery = key;
+                    enterInputMode();
                     const parsed = parseQuery(key);
                     if (parsed && parsed.type === 'command') {
                         highlightCommands(key);
-                        renderSuggestions(shortcuts);
+                        renderMultipleChoices(shortcuts, key);
                     }
                 }
             }
@@ -988,7 +1074,7 @@
                     clearFocus();
                     currentCommandIndex = -1;
                     currentQuery = e.key;
-                    showInputDisplay();
+                    enterInputMode();
                     return;
                 }
             } else if (isInputMode) {
@@ -997,7 +1083,7 @@
                     e.preventDefault();
                     currentQuery = currentQuery.slice(0, -1);
                     if (currentQuery === '') {
-                        closeSearch();
+                        exitInputMode();
                     } else {
                         updateInputDisplay();
                     }
@@ -1018,11 +1104,11 @@
                             execute(searchUrl);
                         }
                     }
-                    closeSearch();
+                    exitInputMode();
                     return;
                 } else if (e.key === 'Tab') {
                     e.preventDefault();
-                    const choices = multipleChoices.querySelectorAll('.choice-option');
+                    const choices = multipleChoicesList.querySelectorAll('.choice-line');
                     if (choices.length > 0) {
                         activeSuggestionIndex = e.shiftKey ?
                             (activeSuggestionIndex <= 0 ? choices.length - 1 : activeSuggestionIndex - 1) :
@@ -1033,7 +1119,7 @@
                 } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
                     e.preventDefault();
                     currentQuery += e.key;
-                    activeSuggestionIndex = 0; // Reset selection
+                    activeSuggestionIndex = -1; // Reset selection (will start at first option)
                     updateInputDisplay();
                     return;
                 }
@@ -1060,7 +1146,7 @@
                     e.preventDefault();
                     const focusedBtn = document.activeElement;
                     if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
-                        applyTheme(focusedBtn.dataset.theme);
+                        applyTheme(focusedBtn.dataset.theme, true);
                     }
                 } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
                     e.preventDefault();
@@ -1087,7 +1173,7 @@
         themeList.addEventListener('click', (e) => {
             const themeBtn = e.target.closest('.theme-option');
             if (themeBtn && themeBtn.dataset.theme) {
-                applyTheme(themeBtn.dataset.theme);
+                applyTheme(themeBtn.dataset.theme, true);
             }
         });
 
@@ -1111,6 +1197,8 @@
         // Initialize
         loadSettings();
         renderCommands();
+        updateInputDisplay(); // Initialize the command line display
+        renderKeysList(); // Show navigation keys at bottom
     </script>
 </body>
 </html>
