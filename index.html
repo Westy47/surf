@@ -1,717 +1,535 @@
 <!DOCTYPE html>
-<meta charset="utf-8" />
-<meta name="color-scheme" content="dark" />
-<meta name="robots" content="noindex" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>~ Terminal Navigator ~</title>
-
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
-
-  :root {
-    --color-background: #0a0a0a;
-    --color-foreground: #00ff00;
-    --color-prompt: #ffff00;
-    --color-command: #00ffff;
-    --color-text-dim: #666;
-    --color-border: #333;
-    --color-cursor: #00ff00;
-    --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-    --terminal-padding: 20px;
-    --line-height: 1.4;
-    --cursor-blink: 1s;
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  html {
-    height: 100vh;
-    overflow: hidden;
-  }
-
-  body {
-    background: var(--color-background);
-    color: var(--color-foreground);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    line-height: var(--line-height);
-    height: 100vh;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .terminal {
-    flex: 1;
-    padding: var(--terminal-padding);
-    background:
-      radial-gradient(ellipse at center, rgba(0, 255, 0, 0.03) 0%, transparent 70%),
-      linear-gradient(transparent 50%, rgba(0, 0, 0, 0.1) 50%);
-    background-size: 100% 100%, 100% 2px;
-    position: relative;
-    overflow-y: auto;
-  }
-
-  .terminal::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        rgba(0, 255, 0, 0.03) 1px,
-        transparent 2px
-      );
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  .header {
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    animation: typing 2s steps(40, end);
-  }
-
-  .header h1 {
-    color: var(--color-prompt);
-    font-weight: 700;
-    text-align: center;
-    text-shadow: 0 0 10px currentColor;
-  }
-
-  .header .subtitle {
-    text-align: center;
-    color: var(--color-text-dim);
-    margin-top: 5px;
-    font-size: 12px;
-  }
-
-  .commands-section {
-    margin-bottom: 30px;
-  }
-
-  .section-title {
-    color: var(--color-command);
-    margin-bottom: 15px;
-    font-weight: 700;
-    text-shadow: 0 0 5px currentColor;
-  }
-
-  .commands-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 8px 20px;
-    margin-left: 20px;
-  }
-
-  .command-item {
-    display: flex;
-    align-items: center;
-    padding: 2px 0;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.2s;
-  }
-
-  .command-item:hover {
-    color: var(--color-prompt);
-    text-shadow: 0 0 8px currentColor;
-    transform: translateX(5px);
-  }
-
-  .command-key {
-    color: var(--color-prompt);
-    font-weight: 700;
-    width: 30px;
-    text-align: center;
-    margin-right: 10px;
-    background: rgba(255, 255, 0, 0.1);
-    border: 1px solid rgba(255, 255, 0, 0.3);
-    border-radius: 3px;
-    font-size: 12px;
-    padding: 2px 0;
-  }
-
-  .command-name {
-    flex: 1;
-  }
-
-  .prompt-line {
-    display: flex;
-    align-items: center;
-    margin: 20px 0;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out 2s forwards;
-  }
-
-  .prompt {
-    color: var(--color-prompt);
-    margin-right: 8px;
-    font-weight: 700;
-  }
-
-  .cursor {
-    display: inline-block;
-    background: var(--color-cursor);
-    color: var(--color-background);
-    animation: blink var(--cursor-blink) infinite;
-    padding: 0 2px;
-    margin-left: 2px;
-  }
-
-  .search-dialog {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-  }
-
-  .search-dialog.active {
-    display: flex;
-  }
-
-  .search-container {
-    width: 80%;
-    max-width: 600px;
-    background: var(--color-background);
-    border: 2px solid var(--color-foreground);
-    border-radius: 5px;
-    padding: 20px;
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
-  }
-
-  .search-input {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--color-foreground);
-    font-family: var(--font-mono);
-    font-size: 18px;
-    padding: 10px;
-    border-bottom: 1px solid var(--color-border);
-    margin-bottom: 20px;
-  }
-
-  .suggestions {
-    list-style: none;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
-  .suggestion {
-    padding: 8px 15px;
-    cursor: pointer;
-    border-radius: 3px;
-    transition: all 0.2s;
-    color: var(--color-text-dim);
-  }
-
-  .suggestion:hover,
-  .suggestion.active {
-    background: rgba(0, 255, 0, 0.1);
-    color: var(--color-foreground);
-    text-shadow: 0 0 5px currentColor;
-  }
-
-  .config-info {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    color: var(--color-text-dim);
-    font-size: 10px;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out 3s forwards;
-  }
-
-  @keyframes typing {
-    from { width: 0; }
-    to { width: 100%; }
-  }
-
-  @keyframes fadeIn {
-    to { opacity: 1; }
-  }
-
-  @keyframes blink {
-    0%, 50% { opacity: 1; }
-    51%, 100% { opacity: 0; }
-  }
-
-  @media (max-width: 768px) {
-    .commands-grid {
-      grid-template-columns: 1fr;
-      gap: 5px;
-    }
-
-    .terminal {
-      padding: 15px;
-    }
-  }
-</style>
-
-<script>
-  // Configuration centralisée - Modifiez ici pour personnaliser
-  const TERMINAL_CONFIG = {
-    // Configuration générale
-    openLinksInNewTab: false,
-    suggestionLimit: 6,
-    searchEngine: 'https://duckduckgo.com/?q={}',
-
-    // Commandes et raccourcis - Modifiez/ajoutez vos liens ici
-    commands: {
-      // Productivity
-      'm': {
-        name: 'ProtonMail',
-        url: 'https://mail.proton.me/u/0/',
-        category: 'productivity',
-        searchTemplate: '?q={}',
-        suggestions: ['mail.proton.me/u/0/', 'mail.google.com/mail/u/0/']
-      },
-      'c': {
-        name: 'Calendar',
-        url: 'https://calendar.proton.me/u/0/',
-        category: 'productivity',
-        suggestions: ['calendar.proton.me/u/0/', 'calendar.google.com/calendar/u/0/r']
-      },
-      'd': {
-        name: 'Drive',
-        url: 'https://drive.proton.me/u/0/',
-        category: 'productivity',
-        suggestions: ['https://drive.proton.me/u/0/', 'drive.google.com/drive/u/0/']
-      },
-      'n': {
-        name: 'Notion',
-        url: 'https://www.notion.so',
-        category: 'productivity'
-      },
-      'l': {
-        name: 'Linear',
-        url: 'https://linear.app/',
-        category: 'productivity'
-      },
-
-      // Development
-      'g': {
-        name: 'GitHub',
-        url: 'https://github.com',
-        category: 'development'
-      },
-      'a': {
-        name: 'ArchLinux',
-        url: 'https://archlinux.org',
-        category: 'development'
-      },
-      '0': {
-        name: 'localhost',
-        url: 'http://localhost:3000',
-        category: 'development',
-        searchTemplate: ':{}',
-        suggestions: ['0 3000', '0 3030', '0 54323', '0 8000', '0 32400', '0 8080']
-      },
-
-      // Entertainment
-      's': {
-        name: 'Spotify',
-        url: 'https://open.spotify.com/',
-        category: 'entertainment'
-      },
-      'y': {
-        name: 'YouTube',
-        url: 'https://youtube.com/feed/subscriptions',
-        category: 'entertainment',
-        searchTemplate: '/results?search_query={}'
-      },
-      'r': {
-        name: 'Reddit',
-        url: 'https://www.reddit.com',
-        category: 'entertainment',
-        searchTemplate: '/search?q={}',
-        suggestions: [
-          'r/r/archlinux',
-          'r/r/kde',
-          'r/r/EndeavourOS',
-          'r/r/neovim'
-        ]
-      },
-
-      // Tools
-      'o': {
-        name: 'AI Chat',
-        url: 'https://chat.mistral.ai/chat',
-        category: 'tools',
-        suggestions: ['https://chat.mistral.ai/chat', 'https://chat.openai.com/']
-      },
-      't': {
-        name: 'Translate',
-        url: 'https://www.deepl.com/translator',
-        category: 'tools'
-      },
-      '?': {
-        name: 'Help',
-        url: 'https://github.com/bouteillerAlan/tilde',
-        category: 'tools'
-      }
-    },
-
-    // Catégories d'affichage
-    categories: {
-      'productivity': 'PRODUCTIVITY',
-      'development': 'DEVELOPMENT',
-      'entertainment': 'ENTERTAINMENT',
-      'tools': 'TOOLS'
-    }
-  };
-</script>
-
-<div class="terminal">
-  <div class="header">
-    <h1>TERMINAL NAVIGATOR v2.1</h1>
-    <div class="subtitle">Press any key to search • Type letter shortcuts for quick access</div>
-  </div>
-
-  <div id="commands-container"></div>
-
-  <div class="prompt-line">
-    <span class="prompt">user@navigator:~$</span>
-    <span>Press any key to start<span class="cursor">█</span></span>
-  </div>
-</div>
-
-<div class="search-dialog" id="searchDialog">
-  <div class="search-container">
-    <input type="text" id="searchInput" class="search-input" placeholder="Enter command or search term..." autocomplete="off" spellcheck="false">
-    <ul class="suggestions" id="suggestions"></ul>
-  </div>
-</div>
-
-<div class="config-info">
-  Config: Edit TERMINAL_CONFIG object to customize
-</div>
-
-<script>
-  class TerminalNavigator {
-    constructor() {
-      this.currentSuggestionIndex = -1;
-      this.keyPressCount = new Map();
-      this.lastKeyTime = 0;
-      this.keyResetDelay = 1000; // 1 seconde pour reset le compteur
-
-      this.init();
-      this.bindEvents();
-      this.renderCommands();
-    }
-
-    init() {
-      this.searchDialog = document.getElementById('searchDialog');
-      this.searchInput = document.getElementById('searchInput');
-      this.suggestionsContainer = document.getElementById('suggestions');
-    }
-
-    bindEvents() {
-      document.addEventListener('keydown', (e) => this.handleKeyDown(e));
-      this.searchInput.addEventListener('input', () => this.handleSearchInput());
-      this.searchInput.addEventListener('keydown', (e) => this.handleSearchKeyDown(e));
-      this.searchDialog.addEventListener('click', (e) => {
-        if (e.target === this.searchDialog) {
-          this.closeSearch();
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      });
-    }
 
-    renderCommands() {
-      const container = document.getElementById('commands-container');
-      const categorizedCommands = this.categorizeCommands();
-
-      Object.entries(categorizedCommands).forEach(([category, commands]) => {
-        if (commands.length === 0) return;
-
-        const section = document.createElement('div');
-        section.className = 'commands-section';
-
-        const title = document.createElement('div');
-        title.className = 'section-title';
-        title.textContent = `> ${TERMINAL_CONFIG.categories[category] || category.toUpperCase()}`;
-        section.appendChild(title);
-
-        const grid = document.createElement('div');
-        grid.className = 'commands-grid';
-
-        commands.forEach(([key, command]) => {
-          const item = document.createElement('a');
-          item.className = 'command-item';
-          item.href = command.url;
-          if (TERMINAL_CONFIG.openLinksInNewTab) {
-            item.target = '_blank';
-            item.rel = 'noopener noreferrer';
-          }
-
-          const keySpan = document.createElement('span');
-          keySpan.className = 'command-key';
-          keySpan.textContent = key;
-
-          const nameSpan = document.createElement('span');
-          nameSpan.className = 'command-name';
-          nameSpan.textContent = command.name;
-
-          item.appendChild(keySpan);
-          item.appendChild(nameSpan);
-          grid.appendChild(item);
-        });
-
-        section.appendChild(grid);
-        container.appendChild(section);
-      });
-    }
-
-    categorizeCommands() {
-      const categorized = {};
-
-      Object.entries(TERMINAL_CONFIG.commands).forEach(([key, command]) => {
-        const category = command.category || 'other';
-        if (!categorized[category]) {
-          categorized[category] = [];
+        :root {
+            --bg-primary: #0f0e0a;
+            --bg-secondary: #1a1814;
+            --orange: #ff8800;
+            --orange-bright: #ffaa33;
+            --orange-dim: #cc6600;
+            --orange-dark: #663311;
+            --amber: #ffaa00;
+            --text-shadow: 0 0 4px currentColor;
+            --glow-orange: 0 0 15px rgba(255, 136, 0, 0.4);
         }
-        categorized[category].push([key, command]);
-      });
 
-      // Trier par catégorie
-      const orderedCategories = ['productivity', 'development', 'entertainment', 'tools', 'other'];
-      const result = {};
 
-      orderedCategories.forEach(cat => {
-        if (categorized[cat]) {
-          result[cat] = categorized[cat];
+        body {
+            background: var(--bg-primary);
+            color: var(--orange);
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
         }
-      });
 
-      return result;
-    }
-
-    handleKeyDown(e) {
-      // Ignorer si on est déjà dans la recherche
-      if (this.searchDialog.classList.contains('active')) return;
-
-      // Empêcher les actions par défaut pour certaines touches
-      if (e.key.length === 1 || e.key === 'Escape') {
-        e.preventDefault();
-      }
-
-      if (e.key === 'Escape') return;
-
-      // Si c'est un caractère typable
-      if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
-        this.handleLetterPress(e.key.toLowerCase());
-      }
-    }
-
-    handleLetterPress(key) {
-      const now = Date.now();
-
-      // Reset le compteur si trop de temps s'est écoulé
-      if (now - this.lastKeyTime > this.keyResetDelay) {
-        this.keyPressCount.clear();
-      }
-
-      this.lastKeyTime = now;
-
-      // Compter les pressions de cette touche
-      const count = (this.keyPressCount.get(key) || 0) + 1;
-      this.keyPressCount.set(key, count);
-
-      // Obtenir toutes les commandes pour cette touche
-      const matchingCommands = this.getCommandsForKey(key);
-
-      if (matchingCommands.length > 0) {
-        // Sélectionner la commande basée sur le nombre de pressions (cyclique)
-        const selectedIndex = (count - 1) % matchingCommands.length;
-        const selectedCommand = matchingCommands[selectedIndex];
-
-        // Naviguer immédiatement
-        this.navigate(selectedCommand.url);
-      } else {
-        // Aucune commande trouvée, ouvrir la recherche
-        this.openSearch(key);
-      }
-    }
-
-    getCommandsForKey(key) {
-      const commands = [];
-      Object.entries(TERMINAL_CONFIG.commands).forEach(([cmdKey, command]) => {
-        if (cmdKey === key) {
-          commands.push(command);
+        /* Terminal window container */
+        .terminal {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            height: calc(100vh - 4rem);
+            display: flex;
+            flex-direction: column;
         }
-      });
-      return commands;
-    }
 
-    openSearch(initialQuery = '') {
-      this.searchDialog.classList.add('active');
-      this.searchInput.value = initialQuery;
-      this.searchInput.focus();
-      this.handleSearchInput();
-    }
-
-    closeSearch() {
-      this.searchDialog.classList.remove('active');
-      this.searchInput.value = '';
-      this.suggestionsContainer.innerHTML = '';
-      this.currentSuggestionIndex = -1;
-    }
-
-    handleSearchInput() {
-      const query = this.searchInput.value.trim();
-
-      if (!query) {
-        this.suggestionsContainer.innerHTML = '';
-        return;
-      }
-
-      const suggestions = this.getSuggestions(query);
-      this.renderSuggestions(suggestions);
-    }
-
-    getSuggestions(query) {
-      const suggestions = [];
-
-      // Ajouter les commandes qui matchent
-      Object.entries(TERMINAL_CONFIG.commands).forEach(([key, command]) => {
-        if (key.includes(query.toLowerCase()) ||
-            command.name.toLowerCase().includes(query.toLowerCase())) {
-          suggestions.push({
-            type: 'command',
-            text: `${key} - ${command.name}`,
-            url: command.url
-          });
+        /* Terminal header */
+        .terminal-header {
+            border-bottom: 1px solid var(--orange-dark);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
         }
-      });
 
-      // Ajouter les suggestions personnalisées des commandes
-      Object.entries(TERMINAL_CONFIG.commands).forEach(([key, command]) => {
-        if (command.suggestions && query.startsWith(key + ' ')) {
-          const searchTerm = query.substring(key.length + 1);
-          command.suggestions.forEach(suggestion => {
-            if (suggestion.toLowerCase().includes(searchTerm.toLowerCase())) {
-              suggestions.push({
-                type: 'suggestion',
-                text: suggestion,
-                url: this.buildSearchUrl(command, searchTerm)
-              });
+        .terminal-title {
+            color: var(--orange-bright);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .terminal-path {
+            color: var(--orange-dim);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Commands section */
+        .commands-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .section-title {
+            color: var(--orange);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .commands-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .command {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .command:hover {
+            background: rgba(255, 136, 0, 0.1);
+        }
+
+        .command.highlight {
+            background: rgba(255, 136, 0, 0.15);
+            box-shadow: 0 0 0 1px var(--orange-dark);
+        }
+
+        .key {
+            display: inline-block;
+            width: 2ch;
+            color: var(--orange-bright);
+            font-weight: bold;
+            margin-right: 1rem;
+            text-align: center;
+        }
+
+        .name {
+            color: var(--orange-dim);
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .command:hover .name,
+        .command.highlight .name {
+            color: var(--orange);
+        }
+
+        /* Terminal prompt */
+        .terminal-prompt {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--orange-dark);
+            text-align: center;
+        }
+
+        .prompt-text {
+            color: var(--orange-dim);
+            font-size: 0.8rem;
+        }
+
+        /* Search overlay */
+        .search-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 14, 10, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+
+        .search-overlay.open {
+            display: flex;
+        }
+
+        .search-prompt {
+            color: var(--orange);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-line {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-prefix {
+            color: var(--orange-bright);
+            margin-right: 0.5rem;
+        }
+
+        .search-input {
+            background: transparent;
+            border: none;
+            color: var(--orange-bright);
+            font-family: inherit;
+            font-size: 1.2rem;
+            outline: none;
+            width: 400px;
+            caret-color: var(--orange-bright);
+        }
+
+        .search-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            max-width: 500px;
+        }
+
+        .suggestion {
+            padding: 0.5rem 1rem;
+            color: var(--orange-dim);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            font-size: 0.9rem;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .suggestion:hover,
+        .suggestion.active {
+            color: var(--orange-bright);
+            background: rgba(255, 136, 0, 0.1);
+        }
+
+        .suggestion::before {
+            content: '>';
+            color: var(--orange);
+            margin-right: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .suggestion:hover::before,
+        .suggestion.active::before {
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .terminal {
+                margin: 1rem;
+                padding: 0.5rem;
+                height: calc(100vh - 2rem);
             }
-          });
-        }
-      });
 
-      // Ajouter une option de recherche générale
-      if (query && suggestions.length < TERMINAL_CONFIG.suggestionLimit) {
-        suggestions.push({
-          type: 'search',
-          text: `Search: "${query}"`,
-          url: TERMINAL_CONFIG.searchEngine.replace('{}', encodeURIComponent(query))
-        });
-      }
-
-      return suggestions.slice(0, TERMINAL_CONFIG.suggestionLimit);
-    }
-
-    buildSearchUrl(command, searchTerm) {
-      if (!command.searchTemplate) return command.url;
-
-      const searchPath = command.searchTemplate.replace('{}', encodeURIComponent(searchTerm));
-      return command.url + searchPath;
-    }
-
-    renderSuggestions(suggestions) {
-      this.suggestionsContainer.innerHTML = '';
-      this.currentSuggestionIndex = -1;
-
-      suggestions.forEach((suggestion, index) => {
-        const li = document.createElement('li');
-        li.className = 'suggestion';
-        li.textContent = suggestion.text;
-        li.dataset.index = index;
-        li.dataset.url = suggestion.url;
-
-        li.addEventListener('click', () => {
-          this.navigate(suggestion.url);
-        });
-
-        this.suggestionsContainer.appendChild(li);
-      });
-    }
-
-    handleSearchKeyDown(e) {
-      const suggestions = this.suggestionsContainer.querySelectorAll('.suggestion');
-
-      switch (e.key) {
-        case 'Escape':
-          this.closeSearch();
-          break;
-
-        case 'Enter':
-          e.preventDefault();
-          if (this.currentSuggestionIndex >= 0) {
-            const url = suggestions[this.currentSuggestionIndex].dataset.url;
-            this.navigate(url);
-          } else {
-            // Recherche générale avec le contenu de l'input
-            const query = this.searchInput.value.trim();
-            if (query) {
-              const url = TERMINAL_CONFIG.searchEngine.replace('{}', encodeURIComponent(query));
-              this.navigate(url);
+            .commands-list {
+                grid-template-columns: 1fr;
+                max-width: 400px;
             }
-          }
-          break;
 
-        case 'ArrowDown':
-          e.preventDefault();
-          this.currentSuggestionIndex = Math.min(
-            this.currentSuggestionIndex + 1,
-            suggestions.length - 1
-          );
-          this.updateSuggestionSelection();
-          break;
+            .search-input {
+                width: 300px;
+                font-size: 1rem;
+            }
 
-        case 'ArrowUp':
-          e.preventDefault();
-          this.currentSuggestionIndex = Math.max(this.currentSuggestionIndex - 1, -1);
-          this.updateSuggestionSelection();
-          break;
-      }
-    }
+            .terminal-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Terminal interface -->
+    <div class="terminal">
+        <div class="terminal-header">
+            <div class="terminal-title">SURF NAVIGATOR v1.0</div>
+            <div class="terminal-path">C:\Users\Navigator\surf></div>
+        </div>
 
-    updateSuggestionSelection() {
-      const suggestions = this.suggestionsContainer.querySelectorAll('.suggestion');
+        <div class="commands-section">
+            <div class="section-title">Available Commands</div>
+            <div class="commands-list" id="commands"></div>
+        </div>
 
-      suggestions.forEach((suggestion, index) => {
-        suggestion.classList.toggle('active', index === this.currentSuggestionIndex);
-      });
-    }
+        <div class="terminal-prompt">
+            <div class="prompt-text">Press any key to execute command or search...</div>
+        </div>
+    </div>
 
-    navigate(url) {
-      const target = TERMINAL_CONFIG.openLinksInNewTab ? '_blank' : '_self';
-      window.open(url, target, 'noopener,noreferrer');
-      this.closeSearch();
-    }
-  }
+    <!-- Search overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-prompt">Enter command or search term:</div>
+        <div class="search-line">
+            <span class="search-prefix">></span>
+            <input type="text" class="search-input" id="searchInput" autocomplete="off" spellcheck="false">
+        </div>
+        <div class="search-suggestions" id="suggestions"></div>
+    </div>
 
-  // Initialiser l'application quand la page est chargée
-  document.addEventListener('DOMContentLoaded', () => {
-    new TerminalNavigator();
-  });
-</script>
+    <script>
+        // Configuration JSON unique - basée sur votre ancien code
+        const CONFIG = {
+            defaultSearchTemplate: 'https://duckduckgo.com/?q={}',
+            openLinksInNewTab: false, // même page comme demandé
+
+            shortcuts: {
+                'm': [
+                    { name: 'Proton Mail', url: 'https://mail.proton.me/u/0/' },
+                    { name: 'Gmail', url: 'https://mail.google.com/mail/u/0/' }
+                ],
+                'c': [
+                    { name: 'Proton Calendar', url: 'https://calendar.proton.me/u/0/' },
+                    { name: 'Google Calendar', url: 'https://calendar.google.com/calendar/u/0/r' }
+                ],
+                'd': [
+                    { name: 'Proton Drive', url: 'https://drive.proton.me/u/0/' },
+                    { name: 'Google Drive', url: 'https://drive.google.com/drive/u/0/' }
+                ],
+                'g': [
+                    { name: 'GitHub', url: 'https://github.com' }
+                ],
+                'n': [
+                    { name: 'Notion', url: 'https://www.notion.so' }
+                ],
+                'l': [
+                    { name: 'Linear', url: 'https://linear.app/' }
+                ],
+                'a': [
+                    { name: 'Archlinux', url: 'https://archlinux.org' }
+                ],
+                's': [
+                    { name: 'Spotify', url: 'https://open.spotify.com/' }
+                ],
+                'o': [
+                    { name: 'Mistral AI', url: 'https://chat.mistral.ai/chat' },
+                    { name: 'ChatGPT', url: 'https://chat.openai.com/' }
+                ],
+                'r': [
+                    { name: 'Reddit', url: 'https://www.reddit.com' },
+                    { name: 'r/archlinux', url: 'https://www.reddit.com/r/archlinux' },
+                    { name: 'r/kde', url: 'https://www.reddit.com/r/kde' },
+                    { name: 'r/neovim', url: 'https://www.reddit.com/r/neovim' }
+                ],
+                't': [
+                    { name: 'DeepL', url: 'https://www.deepl.com/translator' }
+                ],
+                'y': [
+                    { name: 'YouTube', url: 'https://youtube.com/feed/subscriptions' }
+                ],
+                '0': [
+                    { name: 'localhost:3000', url: 'http://localhost:3000' },
+                    { name: 'localhost:3030', url: 'http://localhost:3030' },
+                    { name: 'localhost:8000', url: 'http://localhost:8000' },
+                    { name: 'localhost:8080', url: 'http://localhost:8080' }
+                ],
+                '?': [
+                    { name: 'Help', url: 'https://github.com/bouteillerAlan/tilde' }
+                ]
+            }
+        };
+
+        // Elements
+        const commands = document.getElementById('commands');
+        const searchOverlay = document.getElementById('searchOverlay');
+        const searchInput = document.getElementById('searchInput');
+        const suggestions = document.getElementById('suggestions');
+
+        let currentQuery = '';
+        let activeSuggestionIndex = -1;
+
+        // Render only primary commands by default
+        function renderCommands() {
+            commands.innerHTML = '';
+            Object.entries(CONFIG.shortcuts).forEach(([key, shortcuts]) => {
+                // Show only the first (primary) shortcut for each key
+                const primaryShortcut = shortcuts[0];
+                const cmd = document.createElement('div');
+                cmd.className = shortcuts.length === 1 ? 'command primary' : 'command primary';
+                cmd.innerHTML = `<span class="key">${key}</span><span class="name">${primaryShortcut.name}</span>`;
+                cmd.dataset.key = key;
+                cmd.dataset.index = 0;
+                commands.appendChild(cmd);
+            });
+        }
+
+        // Parse query like in the old code
+        function parseQuery(query) {
+            const trimmed = query.trim();
+
+            if (!trimmed) return null;
+
+            // Check if it's a single command key
+            if (CONFIG.shortcuts[trimmed]) {
+                return { type: 'command', key: trimmed, shortcuts: CONFIG.shortcuts[trimmed] };
+            }
+
+            // Otherwise it's a search
+            return { type: 'search', query: trimmed };
+        }
+
+        // Execute URL
+        function execute(url) {
+            if (CONFIG.openLinksInNewTab) {
+                window.open(url, '_blank', 'noopener noreferrer');
+            } else {
+                window.location.href = url;
+            }
+        }
+
+        // Handle suggestions
+        function renderSuggestions(shortcuts) {
+            suggestions.innerHTML = '';
+            shortcuts.forEach((shortcut, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion';
+                btn.textContent = shortcut.name;
+                btn.dataset.url = shortcut.url;
+                btn.dataset.index = index;
+                btn.addEventListener('click', () => {
+                    execute(shortcut.url);
+                    closeSearch();
+                });
+                suggestions.appendChild(btn);
+            });
+            activeSuggestionIndex = 0;
+            updateActiveSuggestion();
+        }
+
+        function updateActiveSuggestion() {
+            document.querySelectorAll('.suggestion').forEach((btn, index) => {
+                btn.classList.toggle('active', index === activeSuggestionIndex);
+            });
+        }
+
+        // Search overlay control
+        function openSearch() {
+            searchOverlay.classList.add('open');
+            searchInput.focus();
+        }
+
+        function closeSearch() {
+            searchOverlay.classList.remove('open');
+            searchInput.value = '';
+            suggestions.innerHTML = '';
+            clearHighlights();
+            currentQuery = '';
+            activeSuggestionIndex = -1;
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.command').forEach(cmd => {
+                cmd.classList.remove('highlight');
+            });
+        }
+
+        function highlightCommands(key) {
+            clearHighlights();
+            document.querySelectorAll(`[data-key="${key}"]`).forEach(cmd => {
+                cmd.classList.add('highlight');
+            });
+        }
+
+        // Event listeners
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSearch();
+                return;
+            }
+
+            if (!searchOverlay.classList.contains('open')) {
+                // Open search on any character key
+                if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                    openSearch();
+                    // Let the input event handle the character
+                    return;
+                }
+            } else {
+                // Handle navigation in search
+                if (e.key === 'ArrowDown' || e.key === 'Tab') {
+                    e.preventDefault();
+                    if (suggestions.children.length > 0) {
+                        activeSuggestionIndex = (activeSuggestionIndex + 1) % suggestions.children.length;
+                        updateActiveSuggestion();
+                    }
+                } else if (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey)) {
+                    e.preventDefault();
+                    if (suggestions.children.length > 0) {
+                        activeSuggestionIndex = activeSuggestionIndex <= 0 ?
+                            suggestions.children.length - 1 : activeSuggestionIndex - 1;
+                        updateActiveSuggestion();
+                    }
+                }
+            }
+        });
+
+        searchInput.addEventListener('input', (e) => {
+            currentQuery = e.target.value;
+            const parsed = parseQuery(currentQuery);
+
+            if (!parsed) {
+                suggestions.innerHTML = '';
+                clearHighlights();
+                return;
+            }
+
+            if (parsed.type === 'command') {
+                // Show suggestions for this command
+                highlightCommands(parsed.key);
+                if (parsed.shortcuts.length > 1) {
+                    renderSuggestions(parsed.shortcuts);
+                } else {
+                    suggestions.innerHTML = '';
+                }
+            } else {
+                // It's a search query
+                clearHighlights();
+                suggestions.innerHTML = '';
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const parsed = parseQuery(currentQuery);
+
+                if (!parsed) return;
+
+                if (parsed.type === 'command') {
+                    // Execute the selected command
+                    if (suggestions.children.length > 0 && activeSuggestionIndex >= 0) {
+                        const activeBtn = suggestions.children[activeSuggestionIndex];
+                        execute(activeBtn.dataset.url);
+                    } else if (parsed.shortcuts.length === 1) {
+                        // Single command, execute directly
+                        execute(parsed.shortcuts[0].url);
+                    }
+                } else {
+                    // Execute search
+                    const searchUrl = CONFIG.defaultSearchTemplate.replace('{}', encodeURIComponent(parsed.query));
+                    execute(searchUrl);
+                }
+
+                closeSearch();
+            }
+        });
+
+        // Initialize
+        renderCommands();
+    </script>
+</body>
+</html>
