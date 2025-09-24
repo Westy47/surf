@@ -14,71 +14,109 @@
         :root {
             --bg-primary: #0f0e0a;
             --bg-secondary: #1a1814;
-            --orange: #ff8800;
-            --orange-bright: #ffaa33;
-            --orange-dim: #cc6600;
-            --orange-dark: #663311;
+            --primary: #ff8800;
+            --primary-bright: #ffaa33;
+            --primary-dim: #cc6600;
+            --primary-dark: #663311;
             --amber: #ffaa00;
             --text-shadow: 0 0 4px currentColor;
-            --glow-orange: 0 0 15px rgba(255, 136, 0, 0.4);
+            --glow-primary: 0 0 15px rgba(255, 136, 0, 0.4);
+        }
+
+        /* Theme variations */
+        [data-theme="drake"] {
+            --bg-primary: #0f0e0a;
+            --bg-secondary: #1a1814;
+            --primary: #ff8800;
+            --primary-bright: #ffaa33;
+            --primary-dim: #cc6600;
+            --primary-dark: #663311;
+            --glow-primary: 0 0 15px rgba(255, 136, 0, 0.4);
+        }
+
+        [data-theme="green"] {
+            --bg-primary: #0a0f0a;
+            --bg-secondary: #141a14;
+            --primary: #00ff00;
+            --primary-bright: #33ff33;
+            --primary-dim: #00cc00;
+            --primary-dark: #003300;
+            --glow-primary: 0 0 15px rgba(0, 255, 0, 0.4);
+        }
+
+        [data-theme="blue"] {
+            --bg-primary: #0a0e0f;
+            --bg-secondary: #141a1c;
+            --primary: #0088ff;
+            --primary-bright: #33aaff;
+            --primary-dim: #0066cc;
+            --primary-dark: #003366;
+            --glow-primary: 0 0 15px rgba(0, 136, 255, 0.4);
+        }
+
+        [data-theme="red"] {
+            --bg-primary: #0f0a0a;
+            --bg-secondary: #1a1414;
+            --primary: #ff4444;
+            --primary-bright: #ff6666;
+            --primary-dim: #cc3333;
+            --primary-dark: #661111;
+            --glow-primary: 0 0 15px rgba(255, 68, 68, 0.4);
+        }
+
+        [data-theme="purple"] {
+            --bg-primary: #0e0a0f;
+            --bg-secondary: #1a1420;
+            --primary: #aa44ff;
+            --primary-bright: #cc66ff;
+            --primary-dim: #8833cc;
+            --primary-dark: #441166;
+            --glow-primary: 0 0 15px rgba(170, 68, 255, 0.4);
         }
 
 
         body {
             background: var(--bg-primary);
-            color: var(--orange);
+            color: var(--primary);
             font-family: 'Courier New', monospace;
             margin: 0;
             padding: 0;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
-        }
-
-        /* Terminal window container */
-        .terminal {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1rem;
-            height: calc(100vh - 4rem);
             display: flex;
             flex-direction: column;
         }
 
-        /* Terminal header */
-        .terminal-header {
-            border-bottom: 1px solid var(--orange-dark);
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .terminal-title {
-            color: var(--orange-bright);
-            font-size: 1.2rem;
-            margin-bottom: 0.5rem;
+        /* Selected URL display */
+        .selected-info {
+            padding: 1rem;
             text-align: center;
+            border-bottom: 1px solid var(--primary-dark);
+            min-height: 4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .terminal-path {
-            color: var(--orange-dim);
+        .selected-url {
+            color: var(--primary-bright);
+            font-size: 1rem;
+            word-break: break-all;
+        }
+
+        .no-selection {
+            color: var(--primary-dim);
             font-size: 0.9rem;
-            text-align: center;
         }
 
-        /* Commands section */
+        /* Commands section - centered */
         .commands-section {
             flex: 1;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-        }
-
-        .section-title {
-            color: var(--orange);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         .commands-list {
@@ -86,7 +124,6 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 0.5rem;
             max-width: 600px;
-            margin: 0 auto;
         }
 
         .command {
@@ -101,31 +138,31 @@
         }
 
         .command:hover {
-            background: rgba(255, 136, 0, 0.1);
+            background: color-mix(in srgb, var(--primary) 10%, transparent);
         }
 
         .command.highlight {
-            background: rgba(255, 136, 0, 0.15);
-            box-shadow: 0 0 0 1px var(--orange-dark);
+            background: color-mix(in srgb, var(--primary) 15%, transparent);
+            box-shadow: 0 0 0 1px var(--primary-dark);
         }
 
         .command.focused {
-            background: rgba(255, 136, 0, 0.2);
-            box-shadow: 0 0 0 2px var(--orange);
+            background: color-mix(in srgb, var(--primary) 20%, transparent);
+            box-shadow: 0 0 0 2px var(--primary);
             outline: none;
         }
 
         .key {
             display: inline-block;
             width: 2ch;
-            color: var(--orange-bright);
+            color: var(--primary-bright);
             font-weight: bold;
             margin-right: 1rem;
             text-align: center;
         }
 
         .name {
-            color: var(--orange-dim);
+            color: var(--primary-dim);
             font-size: 0.9rem;
             flex: 1;
         }
@@ -133,20 +170,41 @@
         .command:hover .name,
         .command.highlight .name,
         .command.focused .name {
-            color: var(--orange);
+            color: var(--primary);
         }
 
-        /* Terminal prompt */
-        .terminal-prompt {
-            margin-top: auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--orange-dark);
+        /* Available keys display */
+        .keys-info {
+            padding: 1rem;
+            border-top: 1px solid var(--primary-dark);
             text-align: center;
+            min-height: 4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        .prompt-text {
-            color: var(--orange-dim);
+        .keys-title {
+            color: var(--primary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .keys-list {
+            color: var(--primary-dim);
             font-size: 0.8rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            max-width: 800px;
+        }
+
+        .key-item {
+            color: var(--primary-bright);
         }
 
         /* Search overlay */
@@ -236,14 +294,95 @@
             opacity: 1;
         }
 
+        /* Settings popup */
+        .settings-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 14, 10, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .settings-overlay.open {
+            display: flex;
+        }
+
+        .settings-popup {
+            background: var(--bg-secondary);
+            border: 1px solid var(--orange-dark);
+            padding: 2rem;
+            max-width: 500px;
+            width: 90vw;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .settings-title {
+            color: var(--orange-bright);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .settings-section {
+            margin-bottom: 2rem;
+        }
+
+        .settings-section h3 {
+            color: var(--orange);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .theme-option {
+            padding: 1rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--primary-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            color: var(--primary-dim);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .theme-option:hover,
+        .theme-option.active,
+        .theme-option:focus {
+            background: color-mix(in srgb, var(--primary) 10%, transparent);
+            border-color: var(--primary);
+            color: var(--primary-bright);
+            box-shadow: var(--glow-primary);
+        }
+
+        .theme-option:focus {
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+
+        .settings-close {
+            margin-top: 1.5rem;
+            text-align: center;
+            color: var(--orange-dim);
+            font-size: 0.9rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
-            .terminal {
-                margin: 1rem;
-                padding: 0.5rem;
-                height: calc(100vh - 2rem);
-            }
-
             .commands-list {
                 grid-template-columns: 1fr;
                 max-width: 400px;
@@ -254,28 +393,30 @@
                 font-size: 1rem;
             }
 
-            .terminal-title {
-                font-size: 1rem;
+            .selected-url {
+                font-size: 0.9rem;
+            }
+
+            .keys-list {
+                font-size: 0.7rem;
             }
         }
     </style>
 </head>
-<body>
-    <!-- Terminal interface -->
-    <div class="terminal">
-        <div class="terminal-header">
-            <div class="terminal-title">SURF NAVIGATOR v1.0</div>
-            <div class="terminal-path">C:\Users\Navigator\surf></div>
-        </div>
+    <!-- Selected URL display -->
+    <div class="selected-info">
+        <div class="no-selection" id="selectedInfo">Select a command with Tab or type to search</div>
+    </div>
 
-        <div class="commands-section">
-            <div class="section-title">Available Commands</div>
-            <div class="commands-list" id="commands"></div>
-        </div>
+    <!-- Commands section - centered -->
+    <div class="commands-section">
+        <div class="commands-list" id="commands"></div>
+    </div>
 
-        <div class="terminal-prompt">
-            <div class="prompt-text">Press any key to execute command or search...</div>
-        </div>
+    <!-- Available keys display -->
+    <div class="keys-info">
+        <div class="keys-title">Available Keys</div>
+        <div class="keys-list" id="keysList"></div>
     </div>
 
     <!-- Search overlay -->
@@ -286,6 +427,28 @@
             <input type="text" class="search-input" id="searchInput" autocomplete="off" spellcheck="false">
         </div>
         <div class="search-suggestions" id="suggestions"></div>
+    </div>
+
+    <!-- Settings overlay -->
+    <div class="settings-overlay" id="settingsOverlay">
+        <div class="settings-popup">
+            <div class="settings-title">Settings</div>
+
+            <div class="settings-section">
+                <h3>Theme</h3>
+                <div class="theme-grid" id="themeGrid">
+                    <button class="theme-option" data-theme="drake" tabindex="0">Drake Orange</button>
+                    <button class="theme-option" data-theme="green" tabindex="0">Matrix Green</button>
+                    <button class="theme-option" data-theme="blue" tabindex="0">Cyber Blue</button>
+                    <button class="theme-option" data-theme="red" tabindex="0">Alert Red</button>
+                    <button class="theme-option" data-theme="purple" tabindex="0">Neon Purple</button>
+                </div>
+            </div>
+
+            <div class="settings-close">
+                Press Esc to close
+            </div>
+        </div>
     </div>
 
     <script>
@@ -346,6 +509,9 @@
                 ],
                 '?': [
                     { name: 'Help', url: 'https://github.com/bouteillerAlan/tilde' }
+                ],
+                'st': [
+                    { name: 'Settings', url: 'settings://', special: true }
                 ]
             }
         };
@@ -355,11 +521,58 @@
         const searchOverlay = document.getElementById('searchOverlay');
         const searchInput = document.getElementById('searchInput');
         const suggestions = document.getElementById('suggestions');
+        const selectedInfo = document.getElementById('selectedInfo');
+        const keysList = document.getElementById('keysList');
+        const settingsOverlay = document.getElementById('settingsOverlay');
+        const themeGrid = document.getElementById('themeGrid');
 
         let currentQuery = '';
         let activeSuggestionIndex = -1;
         let currentCommandIndex = -1;
         let commandKeys = [];
+
+        // Settings management
+        const SETTINGS_KEY = 'surf-navigator-settings';
+        let settings = {
+            theme: 'drake'
+        };
+
+        // Load settings from localStorage
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem(SETTINGS_KEY);
+                if (saved) {
+                    settings = { ...settings, ...JSON.parse(saved) };
+                }
+            } catch (e) {
+                console.warn('Could not load settings:', e);
+            }
+            applyTheme(settings.theme);
+        }
+
+        // Save settings to localStorage
+        function saveSettings() {
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            } catch (e) {
+                console.warn('Could not save settings:', e);
+            }
+        }
+
+        // Apply theme
+        function applyTheme(theme) {
+            document.body.setAttribute('data-theme', theme);
+            settings.theme = theme;
+            updateThemeButtons();
+            saveSettings();
+        }
+
+        // Update theme buttons visual state
+        function updateThemeButtons() {
+            themeGrid.querySelectorAll('.theme-option').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.theme === settings.theme);
+            });
+        }
 
         // Render only primary commands by default
         function renderCommands() {
@@ -377,6 +590,31 @@
                 commands.appendChild(cmd);
                 commandKeys.push(key);
             });
+            renderKeysList();
+        }
+
+        // Render available navigation keys
+        function renderKeysList() {
+            const navigationKeys = [
+                '<span class="key-item">Tab</span>: Next',
+                '<span class="key-item">Shift+Tab</span>: Previous',
+                '<span class="key-item">Enter</span>: Execute',
+                '<span class="key-item">Esc</span>: Clear',
+                '<span class="key-item">st</span>: Settings'
+            ];
+            keysList.innerHTML = navigationKeys.join(' • ');
+        }
+
+        // Update selected info display
+        function updateSelectedInfo(key = null) {
+            if (key && CONFIG.shortcuts[key]) {
+                const shortcut = CONFIG.shortcuts[key][0];
+                selectedInfo.innerHTML = `<div class="selected-url">${shortcut.url}</div>`;
+                selectedInfo.className = 'selected-url';
+            } else {
+                selectedInfo.innerHTML = 'Select a command with Tab or type to search';
+                selectedInfo.className = 'no-selection';
+            }
         }
 
         // Parse query like in the old code
@@ -394,13 +632,28 @@
             return { type: 'search', query: trimmed };
         }
 
-        // Execute URL
+        // Execute URL or special commands
         function execute(url) {
+            if (url === 'settings://') {
+                openSettings();
+                return;
+            }
+
             if (CONFIG.openLinksInNewTab) {
                 window.open(url, '_blank', 'noopener noreferrer');
             } else {
                 window.location.href = url;
             }
+        }
+
+        // Settings popup control
+        function openSettings() {
+            settingsOverlay.classList.add('open');
+            updateThemeButtons();
+        }
+
+        function closeSettings() {
+            settingsOverlay.classList.remove('open');
         }
 
         // Handle suggestions
@@ -466,6 +719,7 @@
                 if (cmd) {
                     cmd.classList.add('focused');
                     cmd.focus();
+                    updateSelectedInfo(key);
                 }
             }
         }
@@ -474,6 +728,7 @@
             document.querySelectorAll('.command').forEach(cmd => {
                 cmd.classList.remove('focused');
             });
+            updateSelectedInfo(); // Clear selection display
         }
 
         function navigateCommands(direction) {
@@ -515,13 +770,17 @@
         // Event listeners
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                closeSearch();
-                clearFocus();
-                currentCommandIndex = -1;
+                if (settingsOverlay.classList.contains('open')) {
+                    closeSettings();
+                } else {
+                    closeSearch();
+                    clearFocus();
+                    currentCommandIndex = -1;
+                }
                 return;
             }
 
-            if (!searchOverlay.classList.contains('open')) {
+            if (!searchOverlay.classList.contains('open') && !settingsOverlay.classList.contains('open')) {
                 // Navigation on main interface
                 if (e.key === 'Tab') {
                     e.preventDefault();
@@ -541,7 +800,7 @@
                     // Let the input event handle the character
                     return;
                 }
-            } else {
+            } else if (searchOverlay.classList.contains('open')) {
                 // Handle navigation in search overlay
                 if (e.key === 'ArrowDown' || e.key === 'Tab') {
                     e.preventDefault();
@@ -555,6 +814,18 @@
                         activeSuggestionIndex = activeSuggestionIndex <= 0 ?
                             suggestions.children.length - 1 : activeSuggestionIndex - 1;
                         updateActiveSuggestion();
+                    }
+                }
+            } else if (settingsOverlay.classList.contains('open')) {
+                // Handle navigation in settings
+                if (e.key === 'Tab') {
+                    // Let default Tab behavior work for theme buttons
+                    return;
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const focusedBtn = document.activeElement;
+                    if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
+                        applyTheme(focusedBtn.dataset.theme);
                     }
                 }
             }
@@ -611,7 +882,33 @@
             }
         });
 
+        // Theme button event listeners
+        themeGrid.addEventListener('click', (e) => {
+            const themeBtn = e.target.closest('.theme-option');
+            if (themeBtn && themeBtn.dataset.theme) {
+                applyTheme(themeBtn.dataset.theme);
+            }
+        });
+
+        // Command click listeners
+        commands.addEventListener('click', (e) => {
+            const cmd = e.target.closest('.command');
+            if (cmd && cmd.dataset.key) {
+                const key = cmd.dataset.key;
+                const shortcuts = CONFIG.shortcuts[key];
+
+                if (shortcuts.length === 1) {
+                    // Single shortcut, execute directly
+                    execute(shortcuts[0].url);
+                } else {
+                    // Multiple shortcuts, execute first one
+                    execute(shortcuts[0].url);
+                }
+            }
+        });
+
         // Initialize
+        loadSettings();
         renderCommands();
     </script>
 </body>
