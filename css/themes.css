@@ -1,0 +1,140 @@
+:root {
+    --bg-primary: #0f0e0a;
+    --bg-secondary: #1a1814;
+    --primary: #ff8800;
+    --primary-bright: #ffaa33;
+    --primary-dim: #cc6600;
+    --primary-dark: #663311;
+    --glow-primary: rgba(255, 136, 0, 0.4);
+}
+
+/* Theme variations */
+[data-theme="drake"] {
+    --bg-primary: #0f0e0a;
+    --bg-secondary: #1a1814;
+    --primary: #ff8800;
+    --primary-bright: #ffaa33;
+    --primary-dim: #cc6600;
+    --primary-dark: #663311;
+    --glow-primary: rgba(255, 136, 0, 0.4);
+}
+
+[data-theme="green"] {
+    --bg-primary: #0a0f0a;
+    --bg-secondary: #141a14;
+    --primary: #00ff00;
+    --primary-bright: #33ff33;
+    --primary-dim: #00cc00;
+    --primary-dark: #003300;
+    --glow-primary: rgba(0, 255, 0, 0.4);
+}
+
+[data-theme="blue"] {
+    --bg-primary: #0a0e0f;
+    --bg-secondary: #141a1c;
+    --primary: #0088ff;
+    --primary-bright: #33aaff;
+    --primary-dim: #0066cc;
+    --primary-dark: #003366;
+    --glow-primary: rgba(0, 136, 255, 0.4);
+}
+
+[data-theme="red"] {
+    --bg-primary: #0f0a0a;
+    --bg-secondary: #1a1414;
+    --primary: #ff4444;
+    --primary-bright: #ff6666;
+    --primary-dim: #cc3333;
+    --primary-dark: #661111;
+    --glow-primary: rgba(255, 68, 68, 0.4);
+}
+
+[data-theme="purple"] {
+    --bg-primary: #0e0a0f;
+    --bg-secondary: #1a1420;
+    --primary: #aa44ff;
+    --primary-bright: #cc66ff;
+    --primary-dim: #8833cc;
+    --primary-dark: #441166;
+    --glow-primary: rgba(170, 68, 255, 0.4);
+}
+
+[data-theme="rose-pine"] {
+    --bg-primary: #191724;
+    --bg-secondary: #1f1d2e;
+    --primary: #ebbcba;
+    --primary-bright: #f6c177;
+    --primary-dim: #eb6f92;
+    --primary-dark: #31748f;
+    --glow-primary: rgba(235, 188, 186, 0.4);
+}
+
+[data-theme="rose-pine-moon"] {
+    --bg-primary: #232136;
+    --bg-secondary: #2a273f;
+    --primary: #ea9a97;
+    --primary-bright: #f6c177;
+    --primary-dim: #eb6f92;
+    --primary-dark: #3e8fb0;
+    --glow-primary: rgba(234, 154, 151, 0.4);
+}
+
+[data-theme="rose-pine-dawn"] {
+    --bg-primary: #faf4ed;
+    --bg-secondary: #fffaf3;
+    --primary: #d7827e;
+    --primary-bright: #ea9d34;
+    --primary-dim: #b4637a;
+    --primary-dark: #56949f;
+    --glow-primary: rgba(215, 130, 126, 0.4);
+}
+
+[data-theme="catppuccin-latte"] {
+    --bg-primary: #eff1f5;
+    --bg-secondary: #e6e9ef;
+    --primary: #8839ef;
+    --primary-bright: #7287fd;
+    --primary-dim: #6c7086;
+    --primary-dark: #9ca0b0;
+    --glow-primary: rgba(136, 57, 239, 0.4);
+}
+
+[data-theme="catppuccin-frappe"] {
+    --bg-primary: #303446;
+    --bg-secondary: #414559;
+    --primary: #ca9ee6;
+    --primary-bright: #f2d5cf;
+    --primary-dim: #a5adce;
+    --primary-dark: #626880;
+    --glow-primary: rgba(202, 158, 230, 0.4);
+}
+
+[data-theme="catppuccin-macchiato"] {
+    --bg-primary: #24273a;
+    --bg-secondary: #363a4f;
+    --primary: #c6a0f6;
+    --primary-bright: #f0c6c6;
+    --primary-dim: #a5adcb;
+    --primary-dark: #5b6078;
+    --glow-primary: rgba(198, 160, 246, 0.4);
+}
+
+[data-theme="catppuccin-mocha"] {
+    --bg-primary: #1e1e2e;
+    --bg-secondary: #313244;
+    --primary: #cba6f7;
+    --primary-bright: #f5c2e7;
+    --primary-dim: #a6adc8;
+    --primary-dark: #585b70;
+    --glow-primary: rgba(203, 166, 247, 0.4);
+}
+
+[data-theme="agrume"] {
+    --bg-primary: #fefcf0;
+    --bg-secondary: #f9f5e7;
+    --primary: #ff8c42;
+    --primary-bright: #ff6b1a;
+    --primary-dim: #e67e22;
+    --primary-dark: #d68910;
+    --glow-primary: rgba(255, 140, 66, 0.3);
+}

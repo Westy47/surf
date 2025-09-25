@@ -3,643 +3,485 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~</title>
+    <title>surf~</title>
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="fonts/fonts.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #0f0e0a;
-            --bg-secondary: #1a1814;
-            --primary: #ff8800;
-            --primary-bright: #ffaa33;
-            --primary-dim: #cc6600;
-            --primary-dark: #663311;
-            --amber: #ffaa00;
-            --text-shadow: 0 0 4px currentColor;
-            --glow-primary: 0 0 15px rgba(255, 136, 0, 0.4);
-        }
-
-        /* Theme variations */
-        [data-theme="drake"] {
-            --bg-primary: #0f0e0a;
-            --bg-secondary: #1a1814;
-            --primary: #ff8800;
-            --primary-bright: #ffaa33;
-            --primary-dim: #cc6600;
-            --primary-dark: #663311;
-            --glow-primary: 0 0 15px rgba(255, 136, 0, 0.4);
-        }
-
-        [data-theme="green"] {
-            --bg-primary: #0a0f0a;
-            --bg-secondary: #141a14;
-            --primary: #00ff00;
-            --primary-bright: #33ff33;
-            --primary-dim: #00cc00;
-            --primary-dark: #003300;
-            --glow-primary: 0 0 15px rgba(0, 255, 0, 0.4);
-        }
-
-        [data-theme="blue"] {
-            --bg-primary: #0a0e0f;
-            --bg-secondary: #141a1c;
-            --primary: #0088ff;
-            --primary-bright: #33aaff;
-            --primary-dim: #0066cc;
-            --primary-dark: #003366;
-            --glow-primary: 0 0 15px rgba(0, 136, 255, 0.4);
-        }
-
-        [data-theme="red"] {
-            --bg-primary: #0f0a0a;
-            --bg-secondary: #1a1414;
-            --primary: #ff4444;
-            --primary-bright: #ff6666;
-            --primary-dim: #cc3333;
-            --primary-dark: #661111;
-            --glow-primary: 0 0 15px rgba(255, 68, 68, 0.4);
-        }
-
-        [data-theme="purple"] {
-            --bg-primary: #0e0a0f;
-            --bg-secondary: #1a1420;
-            --primary: #aa44ff;
-            --primary-bright: #cc66ff;
-            --primary-dim: #8833cc;
-            --primary-dark: #441166;
-            --glow-primary: 0 0 15px rgba(170, 68, 255, 0.4);
-        }
-
-        [data-theme="rose-pine"] {
-            --bg-primary: #191724;
-            --bg-secondary: #1f1d2e;
-            --primary: #ebbcba;
-            --primary-bright: #f6c177;
-            --primary-dim: #eb6f92;
-            --primary-dark: #31748f;
-            --glow-primary: 0 0 15px rgba(235, 188, 186, 0.4);
-        }
-
-        [data-theme="rose-pine-moon"] {
-            --bg-primary: #232136;
-            --bg-secondary: #2a273f;
-            --primary: #ea9a97;
-            --primary-bright: #f6c177;
-            --primary-dim: #eb6f92;
-            --primary-dark: #3e8fb0;
-            --glow-primary: 0 0 15px rgba(234, 154, 151, 0.4);
-        }
-
-        [data-theme="rose-pine-dawn"] {
-            --bg-primary: #faf4ed;
-            --bg-secondary: #fffaf3;
-            --primary: #d7827e;
-            --primary-bright: #ea9d34;
-            --primary-dim: #b4637a;
-            --primary-dark: #56949f;
-            --glow-primary: 0 0 15px rgba(215, 130, 126, 0.4);
-        }
-
-        [data-theme="catppuccin-latte"] {
-            --bg-primary: #eff1f5;
-            --bg-secondary: #e6e9ef;
-            --primary: #8839ef;
-            --primary-bright: #7287fd;
-            --primary-dim: #6c7086;
-            --primary-dark: #9ca0b0;
-            --glow-primary: 0 0 15px rgba(136, 57, 239, 0.4);
-        }
-
-        [data-theme="catppuccin-frappe"] {
-            --bg-primary: #303446;
-            --bg-secondary: #414559;
-            --primary: #ca9ee6;
-            --primary-bright: #f2d5cf;
-            --primary-dim: #a5adce;
-            --primary-dark: #626880;
-            --glow-primary: 0 0 15px rgba(202, 158, 230, 0.4);
-        }
-
-        [data-theme="catppuccin-macchiato"] {
-            --bg-primary: #24273a;
-            --bg-secondary: #363a4f;
-            --primary: #c6a0f6;
-            --primary-bright: #f0c6c6;
-            --primary-dim: #a5adcb;
-            --primary-dark: #5b6078;
-            --glow-primary: 0 0 15px rgba(198, 160, 246, 0.4);
-        }
-
-        [data-theme="catppuccin-mocha"] {
-            --bg-primary: #1e1e2e;
-            --bg-secondary: #313244;
-            --primary: #cba6f7;
-            --primary-bright: #f5c2e7;
-            --primary-dim: #a6adc8;
-            --primary-dark: #585b70;
-            --glow-primary: 0 0 15px rgba(203, 166, 247, 0.4);
-        }
-
-        [data-theme="agrume"] {
-            --bg-primary: #fefcf0;
-            --bg-secondary: #f9f5e7;
-            --primary: #ff8c42;
-            --primary-bright: #ff6b1a;
-            --primary-dim: #e67e22;
-            --primary-dark: #d68910;
-            --glow-primary: 0 0 15px rgba(255, 140, 66, 0.3);
-        }
-
-
-        body {
-            background: var(--bg-primary);
-            color: var(--primary);
-            font-family: 'Courier New', monospace;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Selected URL display */
-        .selected-info {
-            padding: 1rem;
-            text-align: center;
-            border-bottom: 1px solid var(--primary-dark);
-            min-height: 4rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .selected-url {
-            color: var(--primary-bright);
-            font-size: 1rem;
-            word-break: break-all;
-        }
-
-        .no-selection {
-            color: var(--primary-dim);
-            font-size: 0.9rem;
-        }
-
-        /* Commands section - centered */
-        .commands-section {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        /* Input line - simple text at bottom of page */
-        .input-line {
-            padding: 1rem;
-            border-top: 1px solid var(--primary-dark);
-            text-align: center;
-            min-height: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .current-input {
-            color: var(--primary-bright);
-            font-size: 1rem;
-            font-family: inherit;
-        }
-
-        .key-item {
-            color: var(--primary-bright);
-            background: color-mix(in srgb, var(--primary) 15%, transparent);
-            padding: 0.2rem 0.4rem;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .input-prompt {
-            color: var(--primary-bright);
-        }
-
-        .input-value {
-            color: var(--primary-bright);
-        }
-
-        .input-cursor {
-            color: var(--primary);
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        /* Command input at top of commands list */
-        .command-input {
-            text-align: center;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            color: var(--primary-bright);
-            font-size: 1.1rem;
-        }
-
-        /* Multiple choices - simple text lines */
-        .multiple-choices-list {
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-
-        .choice-line {
-            padding: 0.3rem 0;
-            color: var(--primary-dim);
-            font-size: 1rem;
-            cursor: pointer;
-            transition: color 0.2s ease;
-        }
-
-        .choice-line:hover,
-        .choice-line.selected {
-            color: var(--primary-bright);
-        }
-
-        .choice-option {
-            background: var(--bg-primary);
-            border: 1px solid var(--primary-dark);
-            color: var(--primary-dim);
-            padding: 0.5rem 1rem;
-            border-radius: 3px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            font-size: 0.9rem;
-        }
-
-        .choice-option:hover,
-        .choice-option.active {
-            background: color-mix(in srgb, var(--primary) 15%, transparent);
-            border-color: var(--primary);
-            color: var(--primary-bright);
-            box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
-        }
-
-        .choice-option.selected {
-            background: color-mix(in srgb, var(--primary) 20%, transparent);
-            border-color: var(--primary);
-            color: var(--primary-bright);
-            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
-        }
-
-        .search-indicator {
-            color: var(--primary-dim);
-            font-style: italic;
-            padding: 0.5rem 1rem;
-            background: color-mix(in srgb, var(--primary) 8%, transparent);
-            border: 1px solid var(--primary-dark);
-            border-radius: 3px;
-        }
-
-        .commands-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
-            max-width: 600px;
-        }
-
-        .command {
-            display: flex;
-            align-items: center;
-            padding: 0.8rem 1rem;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
-        }
-
-        .command:hover {
-            background: color-mix(in srgb, var(--primary) 10%, transparent);
-            box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-
-        .command.highlight {
-            background: color-mix(in srgb, var(--primary) 15%, transparent);
-            box-shadow: 0 0 0 1px var(--primary-dark), 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);
-        }
-
-        .command.focused {
-            background: color-mix(in srgb, var(--primary) 20%, transparent);
-            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
-            outline: none;
-        }
-
-        .key {
-            display: inline-block;
-            width: 2ch;
-            color: var(--primary-bright);
-            font-weight: bold;
-            margin-right: 1rem;
-            text-align: center;
-        }
-
-        .name {
-            color: var(--primary-dim);
-            font-size: 0.9rem;
-            flex: 1;
-        }
-
-        .command:hover .name,
-        .command.highlight .name,
-        .command.focused .name {
-            color: var(--primary);
-        }
-
-        /* Available keys display */
-        .keys-info {
-            padding: 1rem;
-            border-top: 1px solid var(--primary-dark);
-            text-align: center;
-            min-height: 4rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .keys-title {
-            color: var(--primary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .keys-list {
-            color: var(--primary-dim);
-            font-size: 0.8rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            max-width: 800px;
-        }
-
-        .key-item {
-            color: var(--primary-bright);
-        }
-
-
-        /* Settings popup */
-        .settings-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(15, 14, 10, 0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
-
-        .settings-overlay.open {
-            display: flex;
-        }
-
-        .settings-popup {
-            background: var(--bg-secondary);
-            border: 1px solid var(--orange-dark);
-            padding: 2rem;
-            max-width: 500px;
-            width: 90vw;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .settings-title {
-            color: var(--primary-bright);
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .settings-section {
-            margin-bottom: 2rem;
-        }
-
-        .settings-section h3 {
-            color: var(--primary);
-            font-size: 1rem;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Theme list with smooth animations */
-        .theme-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .theme-option {
-            padding: 0.8rem 1.2rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--primary-dark);
-            color: var(--primary-dim);
-            font-family: inherit;
-            font-size: 0.9rem;
-            text-align: left;
-            cursor: pointer;
-            outline: none;
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: translateX(0);
-        }
-
-        .theme-option::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg,
-                transparent,
-                color-mix(in srgb, var(--primary) 15%, transparent),
-                transparent
-            );
-            transition: left 0.5s ease;
-        }
-
-        .theme-option:hover::before,
-        .theme-option.active::before,
-        .theme-option:focus::before {
-            left: 100%;
-        }
-
-        .theme-option:hover,
-        .theme-option:focus {
-            background: color-mix(in srgb, var(--primary) 10%, transparent);
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateX(4px);
-            box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);
-        }
-
-        .theme-option.active {
-            background: color-mix(in srgb, var(--primary) 20%, transparent);
-            border-color: var(--primary);
-            color: var(--primary-bright);
-            box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);
-            transform: translateX(8px) scale(1.02);
-        }
-
-        .theme-option.active::after {
-            content: '●';
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--primary-bright);
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-            50% { opacity: 0.6; transform: translateY(-50%) scale(1.2); }
-        }
-
-        /* Theme navigation animations */
-        .settings-popup {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .settings-overlay.open .settings-popup {
-            animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Enhanced theme transition animations */
-        body {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            transition:
-                background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                color 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Theme change flash effect */
-        body.theme-changing {
-            animation: themeFlash 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        @keyframes themeFlash {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            15% {
-                opacity: 0.95;
-                transform: scale(0.998);
-            }
-            30% {
-                opacity: 1;
-                transform: scale(1.001);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        .settings-close {
-            margin-top: 1.5rem;
-            text-align: center;
-            color: var(--primary-dim);
-            font-size: 0.9rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .commands-list {
-                grid-template-columns: 1fr;
-                max-width: 400px;
-            }
-
-            .search-input {
-                width: 300px;
-                font-size: 1rem;
-            }
-
-            .selected-url {
-                font-size: 0.9rem;
-            }
-
-            .keys-list {
-                font-size: 0.7rem;
-            }
-        }
+        /*body {*/
+        /*    background: var(--bg-primary);*/
+        /*    color: var(--primary);*/
+        /*    height: 100vh;*/
+        /*    width: 100vw;*/
+        /*}*/
+
+        /*!* Selected URL display *!*/
+        /*.selected-info {*/
+        /*    padding: 1rem;*/
+        /*    text-align: center;*/
+        /*    border-bottom: 1px solid var(--primary-dark);*/
+        /*    min-height: 4rem;*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*}*/
+
+        /*.selected-url {*/
+        /*    color: var(--primary-bright);*/
+        /*    font-size: 1rem;*/
+        /*    word-break: break-all;*/
+        /*}*/
+
+        /*.no-selection {*/
+        /*    color: var(--primary-dim);*/
+        /*    font-size: 0.9rem;*/
+        /*}*/
+
+        /*!* Commands section - centered *!*/
+        /*.commands-section {*/
+        /*    background-color: #00cc00;*/
+        /*    width: 90%;*/
+        /*    margin: 0 auto;*/
+        /*}*/
+
+        /*!* Input line - simple text at bottom of page *!*/
+        /*.input-line {*/
+        /*    padding: 1rem;*/
+        /*    border-top: 1px solid var(--primary-dark);*/
+        /*    text-align: center;*/
+        /*    min-height: 4rem;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*}*/
+
+        /*.current-input {*/
+        /*    color: var(--primary-bright);*/
+        /*    font-size: 1rem;*/
+        /*    font-family: inherit;*/
+        /*}*/
+
+        /*.key-item {*/
+        /*    color: var(--primary-bright);*/
+        /*    background: color-mix(in srgb, var(--primary) 15%, transparent);*/
+        /*    padding: 0.2rem 0.4rem;*/
+        /*    border-radius: 3px;*/
+        /*    font-size: 0.8rem;*/
+        /*    font-weight: bold;*/
+        /*}*/
+
+        /*.input-prompt {*/
+        /*    color: var(--primary-bright);*/
+        /*}*/
+
+        /*.input-value {*/
+        /*    color: var(--primary-bright);*/
+        /*}*/
+
+        /*.input-cursor {*/
+        /*    color: var(--primary);*/
+        /*    animation: blink 1s infinite;*/
+        /*}*/
+
+        /*@keyframes blink {*/
+        /*    0%, 50% { opacity: 1; }*/
+        /*    51%, 100% { opacity: 0; }*/
+        /*}*/
+
+        /*!* Command input at top of commands list *!*/
+        /*.command-input {*/
+        /*    text-align: center;*/
+        /*    margin-bottom: 1rem;*/
+        /*    padding: 0.5rem;*/
+        /*    color: var(--primary-bright);*/
+        /*    font-size: 1.1rem;*/
+        /*}*/
+
+        /*!* Multiple choices - simple text lines *!*/
+        /*.multiple-choices-list {*/
+        /*    margin-bottom: 1rem;*/
+        /*    text-align: center;*/
+        /*}*/
+
+        /*.choice-line {*/
+        /*    padding: 0.3rem 0;*/
+        /*    color: var(--primary-dim);*/
+        /*    font-size: 1rem;*/
+        /*    cursor: pointer;*/
+        /*    transition: color 0.2s ease;*/
+        /*}*/
+
+        /*.choice-line:hover,*/
+        /*.choice-line.selected {*/
+        /*    color: var(--primary-bright);*/
+        /*}*/
+
+        /*.choice-option {*/
+        /*    background: var(--bg-primary);*/
+        /*    border: 1px solid var(--primary-dark);*/
+        /*    color: var(--primary-dim);*/
+        /*    padding: 0.5rem 1rem;*/
+        /*    border-radius: 3px;*/
+        /*    cursor: pointer;*/
+        /*    transition: all 0.2s ease;*/
+        /*    font-family: inherit;*/
+        /*    font-size: 0.9rem;*/
+        /*}*/
+
+        /*.choice-option:hover,*/
+        /*.choice-option.active {*/
+        /*    background: color-mix(in srgb, var(--primary) 15%, transparent);*/
+        /*    border-color: var(--primary);*/
+        /*    color: var(--primary-bright);*/
+        /*    box-shadow: 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);*/
+        /*}*/
+
+        /*.choice-option.selected {*/
+        /*    background: color-mix(in srgb, var(--primary) 20%, transparent);*/
+        /*    border-color: var(--primary);*/
+        /*    color: var(--primary-bright);*/
+        /*    box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);*/
+        /*}*/
+
+        /*.search-indicator {*/
+        /*    color: var(--primary-dim);*/
+        /*    font-style: italic;*/
+        /*    padding: 0.5rem 1rem;*/
+        /*    background: color-mix(in srgb, var(--primary) 8%, transparent);*/
+        /*    border: 1px solid var(--primary-dark);*/
+        /*    border-radius: 3px;*/
+        /*}*/
+
+        /*.commands-list {*/
+        /*    background-color: rebeccapurple;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*}*/
+
+        /*.command {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    padding: 0.8rem 1rem;*/
+        /*    background: transparent;*/
+        /*    border: none;*/
+        /*    cursor: pointer;*/
+        /*    transition: all 0.2s ease;*/
+        /*    text-align: left;*/
+        /*}*/
+
+        /*.command:hover {*/
+        /*    background: color-mix(in srgb, var(--primary) 10%, transparent);*/
+        /*    box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);*/
+        /*}*/
+
+        /*.command.highlight {*/
+        /*    background: color-mix(in srgb, var(--primary) 15%, transparent);*/
+        /*    box-shadow: 0 0 0 1px var(--primary-dark), 0 0 8px color-mix(in srgb, var(--primary) 25%, transparent);*/
+        /*}*/
+
+        /*.command.focused {*/
+        /*    background: color-mix(in srgb, var(--primary) 20%, transparent);*/
+        /*    box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);*/
+        /*    outline: none;*/
+        /*}*/
+
+        /*.key {*/
+        /*    display: inline-block;*/
+        /*    width: 2ch;*/
+        /*    color: var(--primary-bright);*/
+        /*    font-weight: bold;*/
+        /*    margin-right: 1rem;*/
+        /*    text-align: center;*/
+        /*}*/
+
+        /*.name {*/
+        /*    color: var(--primary-dim);*/
+        /*    font-size: 0.9rem;*/
+        /*    flex: 1;*/
+        /*}*/
+
+        /*.command:hover .name,*/
+        /*.command.highlight .name,*/
+        /*.command.focused .name {*/
+        /*    color: var(--primary);*/
+        /*}*/
+
+        /*!* Available keys display *!*/
+        /*.keys-info {*/
+        /*    padding: 1rem;*/
+        /*    border-top: 1px solid var(--primary-dark);*/
+        /*    text-align: center;*/
+        /*    min-height: 4rem;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*}*/
+
+        /*.keys-title {*/
+        /*    color: var(--primary);*/
+        /*    font-size: 0.9rem;*/
+        /*    margin-bottom: 0.5rem;*/
+        /*    text-transform: uppercase;*/
+        /*    letter-spacing: 1px;*/
+        /*}*/
+
+        /*.keys-list {*/
+        /*    color: var(--primary-dim);*/
+        /*    font-size: 0.8rem;*/
+        /*    display: flex;*/
+        /*    flex-wrap: wrap;*/
+        /*    gap: 0.5rem;*/
+        /*    justify-content: center;*/
+        /*    max-width: 800px;*/
+        /*}*/
+
+        /*.key-item {*/
+        /*    color: var(--primary-bright);*/
+        /*}*/
+
+
+        /*!* Settings popup *!*/
+        /*.settings-overlay {*/
+        /*    position: fixed;*/
+        /*    top: 0;*/
+        /*    left: 0;*/
+        /*    right: 0;*/
+        /*    bottom: 0;*/
+        /*    background: rgba(15, 14, 10, 0.95);*/
+        /*    display: none;*/
+        /*    align-items: center;*/
+        /*    justify-content: center;*/
+        /*    z-index: 200;*/
+        /*}*/
+
+        /*.settings-overlay.open {*/
+        /*    display: flex;*/
+        /*}*/
+
+        /*.settings-popup {*/
+        /*    background: var(--bg-secondary);*/
+        /*    padding: 2rem;*/
+        /*    max-width: 500px;*/
+        /*    width: 90vw;*/
+        /*    max-height: 80vh;*/
+        /*    overflow-y: auto;*/
+        /*}*/
+
+        /*.settings-title {*/
+        /*    color: var(--primary-bright);*/
+        /*    font-size: 1.2rem;*/
+        /*    margin-bottom: 1.5rem;*/
+        /*    text-align: center;*/
+        /*    text-transform: uppercase;*/
+        /*    letter-spacing: 1px;*/
+        /*}*/
+
+        /*.settings-section {*/
+        /*    margin-bottom: 2rem;*/
+        /*}*/
+
+        /*.settings-section h3 {*/
+        /*    color: var(--primary);*/
+        /*    font-size: 1rem;*/
+        /*    margin-bottom: 1rem;*/
+        /*    text-transform: uppercase;*/
+        /*    letter-spacing: 0.5px;*/
+        /*}*/
+
+        /*!* Theme list with smooth animations *!*/
+        /*.theme-list {*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    gap: 0.3rem;*/
+        /*    max-height: 300px;*/
+        /*    overflow-y: auto;*/
+        /*}*/
+
+        /*.theme-option {*/
+        /*    padding: 0.8rem 1.2rem;*/
+        /*    background: var(--bg-primary);*/
+        /*    border: 1px solid var(--primary-dark);*/
+        /*    color: var(--primary-dim);*/
+        /*    font-family: inherit;*/
+        /*    font-size: 0.9rem;*/
+        /*    text-align: left;*/
+        /*    cursor: pointer;*/
+        /*    outline: none;*/
+        /*    position: relative;*/
+        /*    overflow: hidden;*/
+        /*    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*    transform: translateX(0);*/
+        /*}*/
+
+        /*.theme-option::before {*/
+        /*    content: '';*/
+        /*    position: absolute;*/
+        /*    top: 0;*/
+        /*    left: -100%;*/
+        /*    width: 100%;*/
+        /*    height: 100%;*/
+        /*    background: linear-gradient(*/
+        /*        90deg,*/
+        /*        transparent,*/
+        /*        color-mix(in srgb, var(--primary) 15%, transparent),*/
+        /*        transparent*/
+        /*    );*/
+        /*    transition: left 0.5s ease;*/
+        /*}*/
+
+        /*.theme-option:hover::before,*/
+        /*.theme-option.active::before,*/
+        /*.theme-option:focus::before {*/
+        /*    left: 100%;*/
+        /*}*/
+
+        /*.theme-option:hover,*/
+        /*.theme-option:focus {*/
+        /*    background: color-mix(in srgb, var(--primary) 10%, transparent);*/
+        /*    border-color: var(--primary);*/
+        /*    color: var(--primary);*/
+        /*    transform: translateX(4px);*/
+        /*    box-shadow: 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent);*/
+        /*}*/
+
+        /*.theme-option.active {*/
+        /*    background: color-mix(in srgb, var(--primary) 20%, transparent);*/
+        /*    border-color: var(--primary);*/
+        /*    color: var(--primary-bright);*/
+        /*    box-shadow: 0 0 0 2px var(--primary), 0 0 12px color-mix(in srgb, var(--primary) 35%, transparent);*/
+        /*    transform: translateX(8px) scale(1.02);*/
+        /*}*/
+
+        /*.theme-option.active::after {*/
+        /*    content: '●';*/
+        /*    position: absolute;*/
+        /*    right: 1rem;*/
+        /*    top: 50%;*/
+        /*    transform: translateY(-50%);*/
+        /*    color: var(--primary-bright);*/
+        /*    animation: pulse-dot 2s infinite;*/
+        /*}*/
+
+        /*@keyframes pulse-dot {*/
+        /*    0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }*/
+        /*    50% { opacity: 0.6; transform: translateY(-50%) scale(1.2); }*/
+        /*}*/
+
+        /*!* Theme navigation animations *!*/
+        /*.settings-popup {*/
+        /*    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*}*/
+
+        /*.settings-overlay.open .settings-popup {*/
+        /*    animation: slideInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*}*/
+
+        /*@keyframes slideInUp {*/
+        /*    from {*/
+        /*        opacity: 0;*/
+        /*        transform: translateY(30px) scale(0.95);*/
+        /*    }*/
+        /*    to {*/
+        /*        opacity: 1;*/
+        /*        transform: translateY(0) scale(1);*/
+        /*    }*/
+        /*}*/
+
+        /*!* Enhanced theme transition animations *!*/
+        /*body {*/
+        /*    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*}*/
+
+        /** {*/
+        /*    transition:*/
+        /*        background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),*/
+        /*        border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1),*/
+        /*        color 0.6s cubic-bezier(0.4, 0, 0.2, 1),*/
+        /*        box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*}*/
+
+        /*!* Theme change flash effect *!*/
+        /*body.theme-changing {*/
+        /*    animation: themeFlash 0.8s cubic-bezier(0.4, 0, 0.2, 1);*/
+        /*}*/
+
+        /*@keyframes themeFlash {*/
+        /*    0% {*/
+        /*        opacity: 1;*/
+        /*        transform: scale(1);*/
+        /*    }*/
+        /*    15% {*/
+        /*        opacity: 0.95;*/
+        /*        transform: scale(0.998);*/
+        /*    }*/
+        /*    30% {*/
+        /*        opacity: 1;*/
+        /*        transform: scale(1.001);*/
+        /*    }*/
+        /*    100% {*/
+        /*        opacity: 1;*/
+        /*        transform: scale(1);*/
+        /*    }*/
+        /*}*/
+
+        /*.settings-close {*/
+        /*    margin-top: 1.5rem;*/
+        /*    text-align: center;*/
+        /*    color: var(--primary-dim);*/
+        /*    font-size: 0.9rem;*/
+        /*}*/
+
+        /*!* Responsive *!*/
+        /*@media (max-width: 768px) {*/
+        /*    .commands-list {*/
+        /*        grid-template-columns: 1fr;*/
+        /*        max-width: 400px;*/
+        /*    }*/
+
+        /*    .search-input {*/
+        /*        width: 300px;*/
+        /*        font-size: 1rem;*/
+        /*    }*/
+
+        /*    .selected-url {*/
+        /*        font-size: 0.9rem;*/
+        /*    }*/
+
+        /*    .keys-list {*/
+        /*        font-size: 0.7rem;*/
+        /*    }*/
+        /*}*/
     </style>
 </head>
-    <!-- Selected URL display -->
+<body class="vt323">
+<div class="container">
     <div class="selected-info">
         <div class="no-selection" id="selectedInfo">Select a command with Tab or type to search</div>
     </div>
 
-    <!-- Commands section - centered -->
     <div class="commands-section">
-        <!-- Input at top of commands list -->
-        <div class="command-input">
-            <span class="input-prompt">></span>
-            <span class="input-value" id="inputValue"></span>
-            <span class="input-cursor">_</span>
-        </div>
 
-        <!-- Multiple choices - simple lines above commands -->
-        <div class="multiple-choices-list" id="multipleChoicesList" style="display: none;"></div>
+        <div class="command-input">
+            <div class="command-text">
+                <span class="input-prompt">></span>
+                <span class="input-value" id="inputValue"></span><span class="input-cursor">&#9608;</span>
+            </div>
+            <div class="multiple-choices-list" id="multipleChoicesList"></div>
+        </div>
 
         <div class="commands-list" id="commands"></div>
     </div>
 
-    <!-- Input status at bottom (replaces shortcut keys info) -->
-    <div class="input-line">
-        <div class="current-input" id="inputStatus">Select a command with Tab or type to search</div>
+    <div class="footer">
+        <span class="key-item">Tab</span>: Next •
+        <span class="key-item">Shift+Tab</span>: Previous •
+        <span class="key-item">Enter</span>: Execute •
+        <span class="key-item">Esc</span>: Clear •
+        <span class="key-item">st</span>: Settings
     </div>
 
-
-    <!-- Settings overlay -->
     <div class="settings-overlay" id="settingsOverlay">
         <div class="settings-popup">
             <div class="settings-title">Settings</div>
@@ -668,12 +510,13 @@
             </div>
         </div>
     </div>
+</div>
+
 
     <script>
-        // Configuration JSON unique - basée sur votre ancien code
         const CONFIG = {
             defaultSearchTemplate: 'https://duckduckgo.com/?q={}',
-            openLinksInNewTab: false, // même page comme demandé
+            openLinksInNewTab: false,
 
             shortcuts: {
                 'm': [
@@ -726,7 +569,7 @@
                     { name: 'localhost:8080', url: 'http://localhost:8080' }
                 ],
                 '?': [
-                    { name: 'Help', url: 'https://github.com/bouteillerAlan/tilde' }
+                    { name: 'Help', url: 'https://github.com/results-may-vary-org/surf' }
                 ],
                 'st': [
                     { name: 'Settings', url: 'settings://', special: true }
@@ -740,7 +583,6 @@
         const settingsOverlay = document.getElementById('settingsOverlay');
         const themeList = document.getElementById('themeList');
         const inputValue = document.getElementById('inputValue');
-        const inputStatus = document.getElementById('inputStatus');
         const multipleChoicesList = document.getElementById('multipleChoicesList');
 
         let currentQuery = '';
@@ -845,18 +687,6 @@
             }
         }
 
-        // Render available navigation keys
-        function renderKeysList() {
-            const navigationKeys = [
-                '<span class="key-item">Tab</span>: Next',
-                '<span class="key-item">Shift+Tab</span>: Previous',
-                '<span class="key-item">Enter</span>: Execute',
-                '<span class="key-item">Esc</span>: Clear',
-                '<span class="key-item">st</span>: Settings'
-            ];
-            inputStatus.innerHTML = navigationKeys.join(' • ');
-        }
-
         // Parse query like in the old code
         function parseQuery(query) {
             const trimmed = query.trim();
@@ -916,7 +746,6 @@
             multipleChoicesList.style.display = 'none';
             clearHighlights();
             updateInputDisplay();
-            renderKeysList(); // Restore navigation keys display
         }
 
         function updateInputDisplay() {
@@ -926,21 +755,21 @@
             if (parsed && parsed.type === 'command' && parsed.shortcuts.length > 1) {
                 highlightCommands(parsed.key);
                 renderMultipleChoices(parsed.shortcuts, parsed.key);
-                multipleChoicesList.style.display = 'block';
-                inputStatus.textContent = `Multiple options for '${parsed.key}' - use Tab/Shift+Tab to navigate, Enter to select`;
+                multipleChoicesList.style.display = 'flex';
+                selectedInfo.textContent = `Multiple options for '${parsed.key}' - use Tab/Shift+Tab to navigate, Enter to select`;
             } else if (parsed && parsed.type === 'search') {
                 clearHighlights();
                 multipleChoicesList.innerHTML = '';
                 multipleChoicesList.style.display = 'none';
-                inputStatus.textContent = `Search: "${parsed.query}" - press Enter to search`;
+                selectedInfo.textContent = `Search: "${parsed.query}" - press Enter to search`;
             } else {
                 clearHighlights();
                 multipleChoicesList.innerHTML = '';
                 multipleChoicesList.style.display = 'none';
                 if (currentQuery) {
-                    inputStatus.textContent = 'Type more or press Enter to search';
+                    selectedInfo.textContent = 'Type more or press Enter to search';
                 } else {
-                    inputStatus.textContent = 'Select a command with Tab or type to search';
+                    selectedInfo.textContent = 'Select a command with Tab or type to search';
                 }
             }
         }
@@ -950,7 +779,8 @@
             shortcuts.forEach((shortcut, index) => {
                 const choice = document.createElement('div');
                 choice.className = 'choice-line';
-                choice.textContent = `${key}${index + 1}: ${shortcut.name}`;
+                choice.innerHTML = `<span class="key-item">${key}${index + 1}:</span> ${shortcut.name}`;
+                if (index !== shortcuts.length-1) choice.innerHTML += ' / ';
                 choice.dataset.index = index;
                 choice.dataset.url = shortcut.url;
                 choice.addEventListener('click', () => {
@@ -1086,7 +916,6 @@
                     currentCommandIndex = -1;
                     currentQuery = e.key;
                     enterInputMode();
-                    return;
                 }
             } else if (isInputMode) {
                 // Handle input mode
@@ -1098,7 +927,6 @@
                     } else {
                         updateInputDisplay();
                     }
-                    return;
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
                     const parsed = parseQuery(currentQuery);
@@ -1116,7 +944,6 @@
                         }
                     }
                     exitInputMode();
-                    return;
                 } else if (e.key === 'Tab') {
                     e.preventDefault();
                     const choices = multipleChoicesList.querySelectorAll('.choice-line');
@@ -1126,13 +953,11 @@
                             (activeSuggestionIndex + 1) % choices.length;
                         updateActiveChoice();
                     }
-                    return;
                 } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
                     e.preventDefault();
                     currentQuery += e.key;
                     activeSuggestionIndex = -1; // Reset selection (will start at first option)
                     updateInputDisplay();
-                    return;
                 }
             } else if (settingsOverlay.classList.contains('open')) {
                 // Handle navigation in settings
@@ -1152,7 +977,6 @@
                     if (themeOptions[nextIndex]) {
                         themeOptions[nextIndex].focus();
                     }
-                    return;
                 } else if (e.key === 'Enter') {
                     e.preventDefault();
                     const focusedBtn = document.activeElement;
@@ -1208,8 +1032,7 @@
         // Initialize
         loadSettings();
         renderCommands();
-        updateInputDisplay(); // Initialize the command line display
-        renderKeysList(); // Show navigation keys at bottom
+        updateInputDisplay();
     </script>
 </body>
 </html>

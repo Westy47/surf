@@ -1,0 +1,92 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    background: var(--bg-secondary);
+    color: var(--primary);
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.selected-info {
+    padding: 0.5rem;
+    border-bottom: solid 1px var(--primary);
+    text-align: center;
+}
+
+.commands-section {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    width: 80%;
+}
+
+.command-input {
+    display: flex;
+    align-items: baseline;
+    width: 100%;
+}
+
+/* input  with text */
+.command-text {
+    min-width: 50px;
+    width: fit-content;
+    margin-right: 6px;
+}
+.input-prompt {}
+.input-value {
+    margin-right: 2px;
+}
+.input-cursor {
+    font-size: small;
+    animation: blink 1s infinite;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.multiple-choices-list, .commands-list {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 1.5rem;
+}
+
+.command-text, .choice-line, .command {
+    border: solid 1px transparent;
+    padding: 3px;
+}
+
+.choice-line:hover, .choice-line:focus, .choice-line:focus-visible ,
+.command:hover, .command:focus, .command:focus-visible {
+    cursor: pointer;
+    background: var(--glow-primary);
+    border: solid 1px var(--primary-dim);
+    /* reset default focus-visible style */
+    outline: none;
+}
+
+.settings-overlay {
+    display: none;
+}
+
+.footer {
+    padding: 0.5rem;
+    border-top: solid 1px var(--primary);
+    text-align: center;
+}
+
+.key {
+    margin-right: 6px;
+}
+
+.key, .key-item {
+    color: var(--primary-bright);
+    text-shadow: 0 0 10px var(--primary-bright);
+}
