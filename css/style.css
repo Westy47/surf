@@ -142,3 +142,36 @@ button {
     font-weight: bold;
     color: var(--primary-bright);
 }
+
+/* font size */
+html {
+    font-size: 18px;
+}
+
+p {
+    font-size: 1rem;
+}
+
+h1 {
+    font-size: 1.333rem;
+}
+
+h2 {
+    font-size: 1.777rem;
+}
+
+h3 {
+    font-size: 2.369rem;
+}
+
+h4 {
+    font-size: 3.158rem;
+}
+
+h5 {
+    font-size: 4.209rem;
+}
+
+h6 {
+    font-size: 5.61rem;
+}
