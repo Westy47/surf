@@ -153,6 +153,28 @@ function renderCommands() {
         cmd.dataset.key = key;
         cmd.dataset.index = 0;
         cmd.tabIndex = 0; // Make focusable
+        cmd.setAttribute('role', 'button');
+        cmd.setAttribute('aria-label', `Navigate to ${primaryShortcut.name}`);
+
+        // Add keyboard support for accessibility
+        cmd.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const shortcuts = CONFIG.shortcuts[key];
+                if (shortcuts.length === 1) {
+                    execute(shortcuts[0].url);
+                } else {
+                    currentQuery = key;
+                    enterInputMode();
+                    const parsed = parseQuery(key);
+                    if (parsed && parsed.type === 'command') {
+                        highlightCommands(key);
+                        renderMultipleChoices(shortcuts, key);
+                    }
+                }
+            }
+        });
+
         commands.appendChild(cmd);
         commandKeys.push(key);
     });
@@ -264,11 +286,25 @@ function renderMultipleChoices(shortcuts, key) {
         choice.className = 'choice-line';
         choice.innerHTML = `<span class="key-item">${key}${index + 1}:</span> ${shortcut.name}`;
         if (index !== shortcuts.length-1) choice.innerHTML += ' / ';
+        choice.dataset.tabindex = index;
         choice.dataset.index = index;
         choice.dataset.url = shortcut.url;
+        choice.tabIndex = 0; // Make focusable
+        choice.setAttribute('role', 'button');
+        choice.setAttribute('aria-label', `Navigate to ${shortcut.name}`);
+
         choice.addEventListener('click', () => {
             execute(shortcut.url);
             exitInputMode();
+        });
+
+        // Add keyboard support for accessibility
+        choice.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                execute(shortcut.url);
+                exitInputMode();
+            }
         });
         multipleChoicesList.appendChild(choice);
     });
@@ -283,6 +319,9 @@ function renderMultipleChoices(shortcuts, key) {
 function updateActiveChoice() {
     multipleChoicesList.querySelectorAll('.choice-line').forEach((choice, index) => {
         choice.classList.toggle('selected', index === activeSuggestionIndex);
+        if (index === activeSuggestionIndex) {
+            choice.focus();
+        }
     });
 }
 
@@ -383,9 +422,13 @@ document.addEventListener('keydown', (e) => {
 
     if (!isInputMode && !settingsOverlay.classList.contains('open')) {
         // Navigation on main interface
-        if (e.key === 'Tab') {
+        if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
             e.preventDefault();
-            navigateCommands(e.shiftKey ? -1 : 1);
+            navigateCommands((e.key === 'k' || e.key === 'ArrowUp') ? -1 : 1);
+            return;
+        } else if (e.key === 'h' || e.key === 'l' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            navigateCommands((e.key === 'h' || e.key === 'ArrowLeft') ? -1 : 1);
             return;
         } else if (e.key === 'Enter') {
             e.preventDefault();
@@ -427,14 +470,30 @@ document.addEventListener('keydown', (e) => {
                 }
             }
             exitInputMode();
-        } else if (e.key === 'Tab') {
+        } else if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
+                   e.key === 'h' || e.key === 'l' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
             e.preventDefault();
             const choices = multipleChoicesList.querySelectorAll('.choice-line');
             if (choices.length > 0) {
-                activeSuggestionIndex = e.shiftKey ?
+                const isUpOrLeft = e.key === 'k' || e.key === 'ArrowUp' || e.key === 'h' || e.key === 'ArrowLeft';
+                activeSuggestionIndex = isUpOrLeft ?
                     (activeSuggestionIndex <= 0 ? choices.length - 1 : activeSuggestionIndex - 1) :
                     (activeSuggestionIndex + 1) % choices.length;
                 updateActiveChoice();
+            }
+        } else if (e.key === 'Tab') {
+            // Don't prevent default - let Tab work normally for accessibility
+            const choices = multipleChoicesList.querySelectorAll('.choice-line');
+            if (choices.length > 0) {
+                // Update the visual selection to match the focused element
+                const focusedChoice = document.activeElement;
+                if (focusedChoice.classList.contains('choice-line')) {
+                    const focusedIndex = Array.from(choices).indexOf(focusedChoice);
+                    if (focusedIndex !== -1) {
+                        activeSuggestionIndex = focusedIndex;
+                        updateActiveChoice();
+                    }
+                }
             }
         } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
             e.preventDefault();
@@ -466,14 +525,16 @@ document.addEventListener('keydown', (e) => {
             if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
                 applyTheme(focusedBtn.dataset.theme, true);
             }
-        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'j' || e.key === 'k' ||
+                   e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'h' || e.key === 'l') {
             e.preventDefault();
             const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
             const focused = document.activeElement;
             const currentIndex = themeOptions.indexOf(focused);
 
             let nextIndex;
-            if (e.key === 'ArrowUp') {
+            const isUpOrLeft = e.key === 'ArrowUp' || e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'h';
+            if (isUpOrLeft) {
                 nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
             } else {
                 nextIndex = currentIndex >= themeOptions.length - 1 ? 0 : currentIndex + 1;
