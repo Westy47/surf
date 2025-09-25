@@ -50,8 +50,6 @@ For completely offline use:
 2. **Open `index.html`** directly in your browser
 3. **Set as homepage**: Use `file:///path/to/surf/index.html`
 
-⚠️ **Note**: Maybe some features may be limited when using `file://` protocol due to browser security restrictions.
-
 ## Usage
 
 ### Navigation
