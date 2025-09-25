@@ -1,50 +1,56 @@
-# <Ä surf~
+<p align="center">
+<img alt="ActiveBlur" src="assets/screenshot.png" width="220"/>
+</p>
+
+<h1 align="center">surf~</h1>
 
 *A keyboard-driven browser startpage*
 
-[![Made with love](https://img.shields.io/badge/Made%20with-d-red?style=flat-square)](https://github.com/results-may-vary-org/surf)
+<img alt="Static Badge" src="https://img.shields.io/badge/Still_maintened-Yes_%3A)-green">
 
 ## Description
 
-surf~ is a minimal, keyboard-driven browser startpage designed for efficient web navigation. With vim-inspired keybindings and a terminal aesthetic, it provides quick access to your favorite websites and search functionality without leaving the keyboard.
+surf~ is a minimal, keyboard-driven browser startpage.
 
-## Main Features
+## Main features
 
-- **<¯ Keyboard Navigation**: Full hjkl + Tab navigation support
-- **¡ Quick Shortcuts**: Single-key access to favorite websites
-- **= Instant Search**: Type to search with DuckDuckGo
-- **<¨ Multiple Themes**: 14+ themes including Catppuccin, Rosé Pine, and custom variants
-- ** Accessibility**: Full keyboard accessibility with screen reader support
-- **=ñ Responsive**: Works on desktop and mobile devices
-- **=€ Fast**: Pure HTML/CSS/JavaScript - no frameworks, no build process
+- **Keyboard navigation**: full hjkl and Tab navigation support
+- **Quick shortcuts**: single-key access to favorite websites
+- **Instant search**: type to search with DuckDuckGo (default one)
+- **Multiple themes**: 18+ themes including Catppuccin, RosÃ© Pine, Neovim, and custom variants
+- **Accessibility**: full keyboard accessibility with screen reader support
+- **Responsive**: works on desktop and mobile devices
+- **Pure**: pure HTML/CSS/JavaScript
 
 ## Installation
 
-### Using with any HTTP server
+### Deploy with GitHub pages
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/results-may-vary-org/surf.git
-   cd surf
-   ```
+The easiest way to host surf~ is using GitHub Pages:
 
-2. Serve the files using any HTTP server:
-   ```bash
-   # Python
-   python -m http.server 8000
+1. **Fork the repository**:
+   - Go to [github.com/results-may-vary-org/surf](https://github.com/results-may-vary-org/surf)
+   - Click "Fork" in the top right corner
 
-   # Node.js
-   npx serve
+2. **Enable GitHub pages**:
+   - In your forked repository, go to **Settings** â†’ **Pages**
+   - Under "Source", select **Deploy from a branch**
+   - Choose **main** branch and **/ (root)** folder
+   - Click **Save**
 
-   # PHP
-   php -S localhost:8000
-   ```
+3. **Access your startpage**:
+   - GitHub will provide a URL like: `https://yourusername.github.io/surf`
+   - Set this as your browser homepage
 
-3. Open `http://localhost:8000` in your browser
+### Local file access
 
-### Set as Browser Homepage
+For completely offline use:
 
-Point your browser's homepage setting to your hosted instance or local server.
+1. **Download or clone** the repository
+2. **Open `index.html`** directly in your browser
+3. **Set as homepage**: Use `file:///path/to/surf/index.html`
+
+âš ï¸ **Note**: Maybe some features may be limited when using `file://` protocol due to browser security restrictions.
 
 ## Usage
 
@@ -54,24 +60,14 @@ Point your browser's homepage setting to your hosted instance or local server.
 - **Enter**: Execute selected command or search
 - **Esc**: Clear input/exit modes
 - **st**: Open settings
-
-### Shortcuts
-
-- **m**: Mail services (Proton Mail, Gmail)
-- **c**: Calendar services (Proton Calendar, Google Calendar)
-- **g**: GitHub
-- **r**: Reddit communities
-- **s**: Spotify
-- **y**: YouTube
-- **0**: Localhost development servers
 - **?**: Help/Documentation
 
-### Input Mode
+### Input mode
 
 - Type any text to search
 - Multiple options show choices (use hjkl/Tab to navigate)
-- Arrow keys work normally for text editing
 - Press Enter to execute search or selected choice
+- The mouse also work
 
 ## Customization
 
@@ -88,34 +84,35 @@ shortcuts: {
 
 Themes can be selected in the settings panel (press `st`).
 
-## Contributing
+You can also add or remove theme via the `css/themes.css` file and by adding it to the list in `index.html`.
 
-We welcome contributions! Please feel free to:
+## Code of conduct, license, authors, changelog, contributing
 
-- = Report bugs
-- =¡ Suggest new features
-- =' Submit pull requests
-- =Ö Improve documentation
+See the following file :
+- [code of conduct](CODE_OF_CONDUCT.md)
+- [license](LICENSE)
+- [authors](AUTHORS)
+- [contributing](CONTRIBUTING.md)
+- [changelog](CHANGELOG)
+- [security](SECURITY.md)
 
-## Community
+## Want to participate? Have a bug or a request feature?
 
-- **Repository**: [github.com/results-may-vary-org/surf](https://github.com/results-may-vary-org/surf)
-- **Issues**: Report bugs and request features on GitHub
-- **Discussions**: Share ideas and ask questions in GitHub Discussions
+Do not hesitate to open a pr or an issue. I reply when I can.
 
 ## Support
 
 If you find surf~ useful, consider:
 
-- P Starring the repository
-- = Reporting issues
-- = Sharing with others
-- > Contributing code or documentation
+- Starring the repository
+- Reporting issues
+- Sharing with others
+- Contributing code or documentation
 
-## License
+## Want to support my work?
 
-This project is open source. Check the [LICENSE](LICENSE) file for details.
+- [Give me a tips](https://ko-fi.com/a2n00)
+- [Give a star on github](https://github.com/results-may-vary-org/surf)
+- Or just participate to the developement :D
 
----
-
-*Made with d for keyboard enthusiasts and vim lovers* <Ä
+### Thanks !
