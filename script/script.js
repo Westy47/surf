@@ -1,0 +1,518 @@
+const CONFIG = {
+    defaultSearchTemplate: 'https://duckduckgo.com/?q={}',
+    openLinksInNewTab: false,
+    shortcuts: {
+        'm': [
+            { name: 'Proton Mail', url: 'https://mail.proton.me/u/0/' },
+            { name: 'Gmail', url: 'https://mail.google.com/mail/u/0/' }
+        ],
+        'c': [
+            { name: 'Proton Calendar', url: 'https://calendar.proton.me/u/0/' },
+            { name: 'Google Calendar', url: 'https://calendar.google.com/calendar/u/0/r' }
+        ],
+        'd': [
+            { name: 'Proton Drive', url: 'https://drive.proton.me/u/0/' },
+            { name: 'Google Drive', url: 'https://drive.google.com/drive/u/0/' }
+        ],
+        'g': [
+            { name: 'GitHub', url: 'https://github.com' }
+        ],
+        'n': [
+            { name: 'Notion', url: 'https://www.notion.so' }
+        ],
+        'l': [
+            { name: 'Linear', url: 'https://linear.app/' }
+        ],
+        'a': [
+            { name: 'Archlinux', url: 'https://archlinux.org' }
+        ],
+        's': [
+            { name: 'Spotify', url: 'https://open.spotify.com/' }
+        ],
+        'o': [
+            { name: 'Mistral AI', url: 'https://chat.mistral.ai/chat' },
+            { name: 'ChatGPT', url: 'https://chat.openai.com/' }
+        ],
+        'r': [
+            { name: 'Reddit', url: 'https://www.reddit.com' },
+            { name: 'r/archlinux', url: 'https://www.reddit.com/r/archlinux' },
+            { name: 'r/kde', url: 'https://www.reddit.com/r/kde' },
+            { name: 'r/neovim', url: 'https://www.reddit.com/r/neovim' }
+        ],
+        't': [
+            { name: 'DeepL', url: 'https://www.deepl.com/translator' }
+        ],
+        'y': [
+            { name: 'YouTube', url: 'https://youtube.com/feed/subscriptions' }
+        ],
+        '0': [
+            { name: 'localhost:3000', url: 'http://localhost:3000' },
+            { name: 'localhost:3030', url: 'http://localhost:3030' },
+            { name: 'localhost:8000', url: 'http://localhost:8000' },
+            { name: 'localhost:8080', url: 'http://localhost:8080' }
+        ],
+        '?': [
+            { name: 'Help', url: 'https://github.com/results-may-vary-org/surf' }
+        ],
+        'st': [
+            { name: 'Settings', url: 'settings://', special: true }
+        ]
+    }
+};
+
+// Elements
+const commands = document.getElementById('commands');
+const selectedInfo = document.getElementById('selectedInfo');
+const settingsOverlay = document.getElementById('settingsOverlay');
+const themeList = document.getElementById('themeList');
+const inputValue = document.getElementById('inputValue');
+const multipleChoicesList = document.getElementById('multipleChoicesList');
+
+let currentQuery = '';
+let activeSuggestionIndex = -1;
+let currentCommandIndex = -1;
+let commandKeys = [];
+let isInputMode = false;
+
+// Settings management
+const SETTINGS_KEY = 'surf-navigator-settings';
+let settings = {
+    theme: 'drake'
+};
+
+// Load settings from localStorage
+function loadSettings() {
+    try {
+        const saved = localStorage.getItem(SETTINGS_KEY);
+        if (saved) {
+            settings = { ...settings, ...JSON.parse(saved) };
+        }
+    } catch (e) {
+        console.warn('Could not load settings:', e);
+    }
+    applyTheme(settings.theme);
+}
+
+// Save settings to localStorage
+function saveSettings() {
+    try {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch (e) {
+        console.warn('Could not save settings:', e);
+    }
+}
+
+// Apply theme with animation
+function applyTheme(theme, fromUserSelection = false) {
+    if (fromUserSelection) {
+        // First close the modal
+        closeSettings();
+
+        // Then animate the theme change after modal closes
+        setTimeout(() => {
+            // Add flash animation class
+            document.body.classList.add('theme-changing');
+
+            // Apply the new theme
+            document.body.setAttribute('data-theme', theme);
+            settings.theme = theme;
+            updateThemeButtons();
+            saveSettings();
+
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                document.body.classList.remove('theme-changing');
+            }, 800);
+        }, 300); // Wait for modal close animation
+    } else {
+        // Direct theme application for initial load
+        document.body.setAttribute('data-theme', theme);
+        settings.theme = theme;
+        updateThemeButtons();
+        saveSettings();
+    }
+}
+
+// Update theme buttons visual state
+function updateThemeButtons() {
+    themeList.querySelectorAll('.theme-option').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.theme === settings.theme);
+    });
+}
+
+// Render only primary commands by default
+function renderCommands() {
+    commands.innerHTML = '';
+    commandKeys = [];
+    Object.entries(CONFIG.shortcuts).forEach(([key, shortcuts]) => {
+        // Show only the first (primary) shortcut for each key
+        const primaryShortcut = shortcuts[0];
+        const cmd = document.createElement('div');
+        cmd.className = 'command';
+        cmd.innerHTML = `<span class="key">${key}</span><span class="name">${primaryShortcut.name}</span>`;
+        cmd.dataset.key = key;
+        cmd.dataset.index = 0;
+        cmd.tabIndex = 0; // Make focusable
+        commands.appendChild(cmd);
+        commandKeys.push(key);
+    });
+}
+
+// Update selected info display
+function updateSelectedInfo(key = null) {
+    if (key && CONFIG.shortcuts[key]) {
+        const shortcut = CONFIG.shortcuts[key][0];
+        selectedInfo.innerHTML = `<div class="selected-url">${shortcut.url}</div>`;
+        selectedInfo.className = 'selected-url';
+    } else {
+        selectedInfo.innerHTML = 'Select a command with Tab or type to search';
+        selectedInfo.className = 'no-selection';
+    }
+}
+
+// Parse query like in the old code
+function parseQuery(query) {
+    const trimmed = query.trim();
+
+    if (!trimmed) return null;
+
+    // Check if it's a single command key
+    if (CONFIG.shortcuts[trimmed]) {
+        return { type: 'command', key: trimmed, shortcuts: CONFIG.shortcuts[trimmed] };
+    }
+
+    // Otherwise it's a search
+    return { type: 'search', query: trimmed };
+}
+
+// Execute URL or special commands
+function execute(url) {
+    if (url === 'settings://') {
+        openSettings();
+        return;
+    }
+
+    if (CONFIG.openLinksInNewTab) {
+        window.open(url, '_blank', 'noopener noreferrer');
+    } else {
+        window.location.href = url;
+    }
+}
+
+// Settings popup control
+function openSettings() {
+    settingsOverlay.classList.add('open');
+    updateThemeButtons();
+    // Focus the first theme option for keyboard navigation
+    const firstTheme = themeList.querySelector('.theme-option');
+    if (firstTheme) {
+        setTimeout(() => firstTheme.focus(), 100);
+    }
+}
+
+function closeSettings() {
+    settingsOverlay.classList.remove('open');
+}
+
+
+// Input display control - now always visible
+function enterInputMode() {
+    isInputMode = true;
+    updateInputDisplay();
+}
+
+function exitInputMode() {
+    isInputMode = false;
+    currentQuery = '';
+    activeSuggestionIndex = -1;
+    multipleChoicesList.innerHTML = '';
+    multipleChoicesList.style.display = 'none';
+    clearHighlights();
+    updateInputDisplay();
+}
+
+function updateInputDisplay() {
+    inputValue.textContent = currentQuery || '';
+
+    const parsed = parseQuery(currentQuery);
+    if (parsed && parsed.type === 'command' && parsed.shortcuts.length > 1) {
+        highlightCommands(parsed.key);
+        renderMultipleChoices(parsed.shortcuts, parsed.key);
+        multipleChoicesList.style.display = 'flex';
+        selectedInfo.textContent = `Multiple options for '${parsed.key}' - use Tab/Shift+Tab to navigate, Enter to select`;
+    } else if (parsed && parsed.type === 'search') {
+        clearHighlights();
+        multipleChoicesList.innerHTML = '';
+        multipleChoicesList.style.display = 'none';
+        selectedInfo.textContent = `Search: "${parsed.query}" - press Enter to search`;
+    } else {
+        clearHighlights();
+        multipleChoicesList.innerHTML = '';
+        multipleChoicesList.style.display = 'none';
+        if (currentQuery) {
+            selectedInfo.textContent = 'Type more or press Enter to search';
+        } else {
+            selectedInfo.textContent = 'Select a command with Tab or type to search';
+        }
+    }
+}
+
+function renderMultipleChoices(shortcuts, key) {
+    multipleChoicesList.innerHTML = '';
+    shortcuts.forEach((shortcut, index) => {
+        const choice = document.createElement('div');
+        choice.className = 'choice-line';
+        choice.innerHTML = `<span class="key-item">${key}${index + 1}:</span> ${shortcut.name}`;
+        if (index !== shortcuts.length-1) choice.innerHTML += ' / ';
+        choice.dataset.index = index;
+        choice.dataset.url = shortcut.url;
+        choice.addEventListener('click', () => {
+            execute(shortcut.url);
+            exitInputMode();
+        });
+        multipleChoicesList.appendChild(choice);
+    });
+
+    // Set first option as selected if none is selected
+    if (activeSuggestionIndex < 0) {
+        activeSuggestionIndex = 0;
+    }
+    updateActiveChoice();
+}
+
+function updateActiveChoice() {
+    multipleChoicesList.querySelectorAll('.choice-line').forEach((choice, index) => {
+        choice.classList.toggle('selected', index === activeSuggestionIndex);
+    });
+}
+
+// Legacy functions for compatibility
+function openSearch() {
+    enterInputMode();
+}
+
+function closeSearch() {
+    exitInputMode();
+}
+
+function clearHighlights() {
+    document.querySelectorAll('.command').forEach(cmd => {
+        cmd.classList.remove('highlight');
+    });
+}
+
+function highlightCommands(key) {
+    clearHighlights();
+    document.querySelectorAll(`[data-key="${key}"]`).forEach(cmd => {
+        cmd.classList.add('highlight');
+    });
+}
+
+// Navigation functions
+function focusCommand(index) {
+    clearFocus();
+    if (index >= 0 && index < commandKeys.length) {
+        currentCommandIndex = index;
+        const key = commandKeys[index];
+        const cmd = document.querySelector(`[data-key="${key}"]`);
+        if (cmd) {
+            cmd.classList.add('focused');
+            cmd.focus();
+            updateSelectedInfo(key);
+        }
+    }
+}
+
+function clearFocus() {
+    document.querySelectorAll('.command').forEach(cmd => {
+        cmd.classList.remove('focused');
+    });
+    updateSelectedInfo(); // Clear selection display
+}
+
+function navigateCommands(direction) {
+    if (currentCommandIndex === -1) {
+        focusCommand(0);
+    } else {
+        let newIndex = currentCommandIndex + direction;
+        if (newIndex < 0) {
+            newIndex = commandKeys.length - 1;
+        } else if (newIndex >= commandKeys.length) {
+            newIndex = 0;
+        }
+        focusCommand(newIndex);
+    }
+}
+
+function executeCurrentCommand() {
+    if (currentCommandIndex >= 0) {
+        const key = commandKeys[currentCommandIndex];
+        const shortcuts = CONFIG.shortcuts[key];
+
+        if (shortcuts.length === 1) {
+            // Single shortcut, execute directly
+            execute(shortcuts[0].url);
+        } else {
+            // Multiple shortcuts, enter input mode
+            currentQuery = key;
+            enterInputMode();
+            const parsed = parseQuery(key);
+            if (parsed && parsed.type === 'command') {
+                highlightCommands(key);
+                renderMultipleChoices(shortcuts, key);
+            }
+        }
+    }
+}
+
+// Event listeners
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (settingsOverlay.classList.contains('open')) {
+            closeSettings();
+        } else if (isInputMode) {
+            closeSearch();
+            clearFocus();
+            currentCommandIndex = -1;
+        } else {
+            clearFocus();
+            currentCommandIndex = -1;
+        }
+        return;
+    }
+
+    if (!isInputMode && !settingsOverlay.classList.contains('open')) {
+        // Navigation on main interface
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            navigateCommands(e.shiftKey ? -1 : 1);
+            return;
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            executeCurrentCommand();
+            return;
+        }
+
+        // Open input mode on any character key
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            clearFocus();
+            currentCommandIndex = -1;
+            currentQuery = e.key;
+            enterInputMode();
+        }
+    } else if (isInputMode) {
+        // Handle input mode
+        if (e.key === 'Backspace') {
+            e.preventDefault();
+            currentQuery = currentQuery.slice(0, -1);
+            if (currentQuery === '') {
+                exitInputMode();
+            } else {
+                updateInputDisplay();
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const parsed = parseQuery(currentQuery);
+            if (parsed) {
+                if (parsed.type === 'command' && parsed.shortcuts.length > 1) {
+                    // Execute selected choice or first one
+                    const choiceIndex = activeSuggestionIndex >= 0 ? activeSuggestionIndex : 0;
+                    execute(parsed.shortcuts[choiceIndex].url);
+                } else if (parsed.type === 'command') {
+                    execute(parsed.shortcuts[0].url);
+                } else {
+                    // Search query
+                    const searchUrl = CONFIG.defaultSearchTemplate.replace('{}', encodeURIComponent(parsed.query));
+                    execute(searchUrl);
+                }
+            }
+            exitInputMode();
+        } else if (e.key === 'Tab') {
+            e.preventDefault();
+            const choices = multipleChoicesList.querySelectorAll('.choice-line');
+            if (choices.length > 0) {
+                activeSuggestionIndex = e.shiftKey ?
+                    (activeSuggestionIndex <= 0 ? choices.length - 1 : activeSuggestionIndex - 1) :
+                    (activeSuggestionIndex + 1) % choices.length;
+                updateActiveChoice();
+            }
+        } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault();
+            currentQuery += e.key;
+            activeSuggestionIndex = -1; // Reset selection (will start at first option)
+            updateInputDisplay();
+        }
+    } else if (settingsOverlay.classList.contains('open')) {
+        // Handle navigation in settings
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
+            const focused = document.activeElement;
+            const currentIndex = themeOptions.indexOf(focused);
+
+            let nextIndex;
+            if (e.shiftKey) {
+                nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
+            } else {
+                nextIndex = currentIndex >= themeOptions.length - 1 ? 0 : currentIndex + 1;
+            }
+
+            if (themeOptions[nextIndex]) {
+                themeOptions[nextIndex].focus();
+            }
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            const focusedBtn = document.activeElement;
+            if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
+                applyTheme(focusedBtn.dataset.theme, true);
+            }
+        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
+            const focused = document.activeElement;
+            const currentIndex = themeOptions.indexOf(focused);
+
+            let nextIndex;
+            if (e.key === 'ArrowUp') {
+                nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
+            } else {
+                nextIndex = currentIndex >= themeOptions.length - 1 ? 0 : currentIndex + 1;
+            }
+
+            if (themeOptions[nextIndex]) {
+                themeOptions[nextIndex].focus();
+            }
+        }
+    }
+});
+
+
+// Theme button event listeners
+themeList.addEventListener('click', (e) => {
+    const themeBtn = e.target.closest('.theme-option');
+    if (themeBtn && themeBtn.dataset.theme) {
+        applyTheme(themeBtn.dataset.theme, true);
+    }
+});
+
+// Command click listeners
+commands.addEventListener('click', (e) => {
+    const cmd = e.target.closest('.command');
+    if (cmd && cmd.dataset.key) {
+        const key = cmd.dataset.key;
+        const shortcuts = CONFIG.shortcuts[key];
+
+        if (shortcuts.length === 1) {
+            // Single shortcut, execute directly
+            execute(shortcuts[0].url);
+        } else {
+            // Multiple shortcuts, execute first one
+            execute(shortcuts[0].url);
+        }
+    }
+});
+
+// Initialize
+loadSettings();
+renderCommands();
+updateInputDisplay();

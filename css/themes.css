@@ -59,6 +59,25 @@
     --glow-primary: rgba(170, 68, 255, 0.4);
 }
 
+[data-theme="agrume"] {
+    --bg-primary: #fefcf0;
+    --bg-secondary: #f9f5e7;
+    --primary: #ff8c42;
+    --primary-bright: #ff6b1a;
+    --primary-dim: #e67e22;
+    --primary-dark: #d68910;
+    --glow-primary: rgba(255, 140, 66, 0.3);
+}
+[data-theme="agrume-dark"] {
+    --bg-primary:    #1e140f;
+    --bg-secondary: #2a2725;
+    --primary:       #ff9d5c;
+    --primary-bright:#ffb366;
+    --primary-dim:   #e67e22;
+    --primary-dark:  #8a4a0f;
+    --glow-primary:  rgba(255, 157, 92, 0.35);
+}
+
 [data-theme="rose-pine"] {
     --bg-primary: #191724;
     --bg-secondary: #1f1d2e;
@@ -68,7 +87,6 @@
     --primary-dark: #31748f;
     --glow-primary: rgba(235, 188, 186, 0.4);
 }
-
 [data-theme="rose-pine-moon"] {
     --bg-primary: #232136;
     --bg-secondary: #2a273f;
@@ -78,7 +96,6 @@
     --primary-dark: #3e8fb0;
     --glow-primary: rgba(234, 154, 151, 0.4);
 }
-
 [data-theme="rose-pine-dawn"] {
     --bg-primary: #faf4ed;
     --bg-secondary: #fffaf3;
@@ -98,7 +115,6 @@
     --primary-dark: #9ca0b0;
     --glow-primary: rgba(136, 57, 239, 0.4);
 }
-
 [data-theme="catppuccin-frappe"] {
     --bg-primary: #303446;
     --bg-secondary: #414559;
@@ -108,7 +124,6 @@
     --primary-dark: #626880;
     --glow-primary: rgba(202, 158, 230, 0.4);
 }
-
 [data-theme="catppuccin-macchiato"] {
     --bg-primary: #24273a;
     --bg-secondary: #363a4f;
@@ -118,7 +133,6 @@
     --primary-dark: #5b6078;
     --glow-primary: rgba(198, 160, 246, 0.4);
 }
-
 [data-theme="catppuccin-mocha"] {
     --bg-primary: #1e1e2e;
     --bg-secondary: #313244;
@@ -127,14 +141,4 @@
     --primary-dim: #a6adc8;
     --primary-dark: #585b70;
     --glow-primary: rgba(203, 166, 247, 0.4);
-}
-
-[data-theme="agrume"] {
-    --bg-primary: #fefcf0;
-    --bg-secondary: #f9f5e7;
-    --primary: #ff8c42;
-    --primary-bright: #ff6b1a;
-    --primary-dim: #e67e22;
-    --primary-dark: #d68910;
-    --glow-primary: rgba(255, 140, 66, 0.3);
 }

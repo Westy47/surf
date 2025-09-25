@@ -63,6 +63,7 @@ body {
     padding: 3px;
 }
 
+button:hover, button:focus, button:focus-visible ,
 .choice-line:hover, .choice-line:focus, .choice-line:focus-visible ,
 .command:hover, .command:focus, .command:focus-visible {
     cursor: pointer;
@@ -72,9 +73,60 @@ body {
     outline: none;
 }
 
+@media only screen and (max-width: 300px) {
+    .settings-popup {
+        height: 100vh;
+        width: 100vw;
+        overflow-y: auto;
+    }
+}
+
+@media only screen and (min-width: 301px) {
+    .settings-popup {
+        width: 80%;
+        margin: 0 auto;
+        overflow: hidden;
+    }
+}
+
 .settings-overlay {
     display: none;
+    position: absolute;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
 }
+
+.open {
+    display: flex;
+}
+
+.settings-popup {
+    background: var(--bg-primary);
+    border: solid 1px var(--glow-primary);
+    padding: 6px;
+    height: fit-content;
+}
+
+.settings-section {
+    margin: 1rem 0;
+}
+.settings-section > h3 {
+    margin: 0;
+}
+
+.theme-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+button {
+    background-color: var(--bg-secondary);
+    color: var(--primary);
+    border: solid 1px var(--primary);
+}
+
 
 .footer {
     padding: 0.5rem;
@@ -87,6 +139,6 @@ body {
 }
 
 .key, .key-item {
+    font-weight: bold;
     color: var(--primary-bright);
-    text-shadow: 0 0 10px var(--primary-bright);
 }
