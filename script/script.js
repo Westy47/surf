@@ -250,6 +250,14 @@ function exitInputMode() {
     multipleChoicesList.innerHTML = '';
     multipleChoicesList.style.display = 'none';
     clearHighlights();
+
+    // Clear any focused elements and reset focus
+    if (document.activeElement && document.activeElement.blur) {
+        document.activeElement.blur();
+    }
+    clearFocus();
+    currentCommandIndex = -1;
+
     updateInputDisplay();
 }
 
@@ -289,7 +297,7 @@ function renderMultipleChoices(shortcuts, key) {
         choice.dataset.tabindex = index;
         choice.dataset.index = index;
         choice.dataset.url = shortcut.url;
-        choice.tabIndex = 0; // Make focusable
+        choice.tabIndex = 0;
         choice.setAttribute('role', 'button');
         choice.setAttribute('aria-label', `Navigate to ${shortcut.name}`);
 
@@ -313,13 +321,28 @@ function renderMultipleChoices(shortcuts, key) {
     if (activeSuggestionIndex < 0) {
         activeSuggestionIndex = 0;
     }
+
+    // Clear focus from main commands when multiple choices appear
+    clearFocus();
+    currentCommandIndex = -1;
+
     updateActiveChoice();
+
+    // Focus the first choice item immediately
+    setTimeout(() => {
+        const firstChoice = multipleChoicesList.querySelector('.choice-line');
+        if (firstChoice) {
+            firstChoice.focus();
+        }
+    }, 0);
 }
 
 function updateActiveChoice() {
     multipleChoicesList.querySelectorAll('.choice-line').forEach((choice, index) => {
         choice.classList.toggle('selected', index === activeSuggestionIndex);
-        if (index === activeSuggestionIndex) {
+        // Only focus programmatically if the user is using hjkl/arrow keys
+        // Don't interfere with Tab navigation
+        if (index === activeSuggestionIndex && document.activeElement !== choice) {
             choice.focus();
         }
     });
@@ -482,18 +505,24 @@ document.addEventListener('keydown', (e) => {
                 updateActiveChoice();
             }
         } else if (e.key === 'Tab') {
-            // Don't prevent default - let Tab work normally for accessibility
+            // Only handle Tab within multiple choice context
             const choices = multipleChoicesList.querySelectorAll('.choice-line');
-            if (choices.length > 0) {
-                // Update the visual selection to match the focused element
-                const focusedChoice = document.activeElement;
-                if (focusedChoice.classList.contains('choice-line')) {
-                    const focusedIndex = Array.from(choices).indexOf(focusedChoice);
-                    if (focusedIndex !== -1) {
-                        activeSuggestionIndex = focusedIndex;
-                        updateActiveChoice();
+            if (choices.length > 0 && multipleChoicesList.style.display !== 'none') {
+                // Don't prevent default - let Tab work normally for accessibility
+                // Update the visual selection to match the focused element after Tab navigation
+                setTimeout(() => {
+                    const focusedChoice = document.activeElement;
+                    if (focusedChoice && focusedChoice.classList.contains('choice-line')) {
+                        const focusedIndex = Array.from(choices).indexOf(focusedChoice);
+                        if (focusedIndex !== -1) {
+                            activeSuggestionIndex = focusedIndex;
+                            // Don't call updateActiveChoice here to avoid focus conflicts
+                            choices.forEach((choice, index) => {
+                                choice.classList.toggle('selected', index === activeSuggestionIndex);
+                            });
+                        }
                     }
-                }
+                }, 0);
             }
         } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
             e.preventDefault();

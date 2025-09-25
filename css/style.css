@@ -64,7 +64,7 @@ body {
 }
 
 button:hover, button:focus, button:focus-visible ,
-.choice-line:hover, .choice-line:focus, .choice-line:focus-visible, .choice-line.selected ,
+.choice-line:hover, .choice-line:focus, .choice-line:focus-visible,
 .command:hover, .command:focus, .command:focus-visible {
     cursor: pointer;
     background: var(--glow-primary);
