@@ -65,7 +65,7 @@ const commands = document.getElementById('commands');
 const selectedInfo = document.getElementById('selectedInfo');
 const settingsOverlay = document.getElementById('settingsOverlay');
 const themeList = document.getElementById('themeList');
-const inputValue = document.getElementById('inputValue');
+const realInput = document.getElementById('realInput');
 const multipleChoicesList = document.getElementById('multipleChoicesList');
 
 let currentQuery = '';
@@ -240,6 +240,10 @@ function closeSettings() {
 // Input display control - now always visible
 function enterInputMode() {
     isInputMode = true;
+    // Focus input immediately so it can receive the keystroke
+    if (!realInput.matches(':focus')) {
+        realInput.focus();
+    }
     updateInputDisplay();
 }
 
@@ -251,10 +255,10 @@ function exitInputMode() {
     multipleChoicesList.style.display = 'none';
     clearHighlights();
 
-    // Clear any focused elements and reset focus
-    if (document.activeElement && document.activeElement.blur) {
-        document.activeElement.blur();
-    }
+    // Clear the input and blur it
+    realInput.value = '';
+    realInput.blur();
+
     clearFocus();
     currentCommandIndex = -1;
 
@@ -262,14 +266,18 @@ function exitInputMode() {
 }
 
 function updateInputDisplay() {
-    inputValue.textContent = currentQuery || '';
+    // Don't modify input value here - let the input handle its own value
+    // Only sync if there's a mismatch (like when programmatically clearing)
+    if (realInput.value !== currentQuery) {
+        realInput.value = currentQuery || '';
+    }
 
     const parsed = parseQuery(currentQuery);
     if (parsed && parsed.type === 'command' && parsed.shortcuts.length > 1) {
         highlightCommands(parsed.key);
         renderMultipleChoices(parsed.shortcuts, parsed.key);
         multipleChoicesList.style.display = 'flex';
-        selectedInfo.textContent = `Multiple options for '${parsed.key}' - use Tab/Shift+Tab to navigate, Enter to select`;
+        selectedInfo.textContent = `Multiple options for '${parsed.key}' - use hjkl/tab to navigate, Enter to select`;
     } else if (parsed && parsed.type === 'search') {
         clearHighlights();
         multipleChoicesList.innerHTML = '';
@@ -282,7 +290,7 @@ function updateInputDisplay() {
         if (currentQuery) {
             selectedInfo.textContent = 'Type more or press Enter to search';
         } else {
-            selectedInfo.textContent = 'Select a command with Tab or type to search';
+            selectedInfo.textContent = 'Select a command with hjkl/tab or type to search';
         }
     }
 }
@@ -328,23 +336,12 @@ function renderMultipleChoices(shortcuts, key) {
 
     updateActiveChoice();
 
-    // Focus the first choice item immediately
-    setTimeout(() => {
-        const firstChoice = multipleChoicesList.querySelector('.choice-line');
-        if (firstChoice) {
-            firstChoice.focus();
-        }
-    }, 0);
+    // Don't auto-focus choices - keep input focused so user can continue typing
 }
 
 function updateActiveChoice() {
     multipleChoicesList.querySelectorAll('.choice-line').forEach((choice, index) => {
         choice.classList.toggle('selected', index === activeSuggestionIndex);
-        // Only focus programmatically if the user is using hjkl/arrow keys
-        // Don't interfere with Tab navigation
-        if (index === activeSuggestionIndex && document.activeElement !== choice) {
-            choice.focus();
-        }
     });
 }
 
@@ -427,6 +424,55 @@ function executeCurrentCommand() {
     }
 }
 
+// Real input event listeners
+realInput.addEventListener('input', (e) => {
+    currentQuery = e.target.value;
+    activeSuggestionIndex = -1; // Reset selection
+
+    // Enter input mode if not already in it (for when user clicks and types)
+    if (!isInputMode) {
+        isInputMode = true;
+    }
+
+    updateInputDisplay();
+
+    // Exit input mode if the input becomes empty
+    if (currentQuery === '') {
+        setTimeout(() => {
+            if (currentQuery === '' && !realInput.matches(':focus')) {
+                exitInputMode();
+            }
+        }, 100);
+    }
+});
+
+realInput.addEventListener('focus', () => {
+    isInputMode = true;
+});
+
+realInput.addEventListener('blur', () => {
+    // Don't exit input mode on blur if multiple choices are showing
+    // This allows Tab navigation between choices
+    const hasMultipleChoices = multipleChoicesList.style.display !== 'none' &&
+                              multipleChoicesList.querySelectorAll('.choice-line').length > 0;
+    if (!hasMultipleChoices && currentQuery === '') {
+        isInputMode = false;
+        updateInputDisplay();
+    }
+});
+
+// Special handling for navigation keys in the input
+realInput.addEventListener('keydown', (e) => {
+    // Handle Enter key in input
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        // This will be handled by the main keydown handler
+        return;
+    }
+
+    // hjkl and arrow keys work normally for text editing when input is focused
+});
+
 // Event listeners
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
@@ -445,13 +491,13 @@ document.addEventListener('keydown', (e) => {
 
     if (!isInputMode && !settingsOverlay.classList.contains('open')) {
         // Navigation on main interface
-        if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        if (e.key === 'j' || e.key === 'k') {
             e.preventDefault();
-            navigateCommands((e.key === 'k' || e.key === 'ArrowUp') ? -1 : 1);
+            navigateCommands(e.key === 'k' ? -1 : 1);
             return;
-        } else if (e.key === 'h' || e.key === 'l' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        } else if (e.key === 'h' || e.key === 'l') {
             e.preventDefault();
-            navigateCommands((e.key === 'h' || e.key === 'ArrowLeft') ? -1 : 1);
+            navigateCommands(e.key === 'h' ? -1 : 1);
             return;
         } else if (e.key === 'Enter') {
             e.preventDefault();
@@ -459,24 +505,20 @@ document.addEventListener('keydown', (e) => {
             return;
         }
 
-        // Open input mode on any character key
+        // Open input mode on any character key - let the input handle the typing
         if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+            e.preventDefault(); // Prevent default to avoid double input
             clearFocus();
             currentCommandIndex = -1;
-            currentQuery = e.key;
             enterInputMode();
+            // Manually add the character since we prevented default
+            realInput.value = e.key;
+            currentQuery = e.key;
+            updateInputDisplay();
         }
     } else if (isInputMode) {
-        // Handle input mode
-        if (e.key === 'Backspace') {
-            e.preventDefault();
-            currentQuery = currentQuery.slice(0, -1);
-            if (currentQuery === '') {
-                exitInputMode();
-            } else {
-                updateInputDisplay();
-            }
-        } else if (e.key === 'Enter') {
+        // Handle input mode - most typing is handled by the real input
+        if (e.key === 'Enter') {
             e.preventDefault();
             const parsed = parseQuery(currentQuery);
             if (parsed) {
@@ -493,15 +535,26 @@ document.addEventListener('keydown', (e) => {
                 }
             }
             exitInputMode();
-        } else if (e.key === 'j' || e.key === 'k' || e.key === 'ArrowUp' || e.key === 'ArrowDown' ||
-                   e.key === 'h' || e.key === 'l' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        } else if (e.key === 'j' || e.key === 'k' || e.key === 'h' || e.key === 'l') {
+            // Only use hjkl for navigation if input is not focused
+            if (document.activeElement === realInput) {
+                // Let hjkl work as normal text input
+                return;
+            }
+
             e.preventDefault();
             const choices = multipleChoicesList.querySelectorAll('.choice-line');
             if (choices.length > 0) {
-                const isUpOrLeft = e.key === 'k' || e.key === 'ArrowUp' || e.key === 'h' || e.key === 'ArrowLeft';
+                const isUpOrLeft = e.key === 'k' || e.key === 'h';
                 activeSuggestionIndex = isUpOrLeft ?
                     (activeSuggestionIndex <= 0 ? choices.length - 1 : activeSuggestionIndex - 1) :
                     (activeSuggestionIndex + 1) % choices.length;
+
+                // Move focus from input to the selected choice
+                const selectedChoice = choices[activeSuggestionIndex];
+                if (selectedChoice) {
+                    selectedChoice.focus();
+                }
                 updateActiveChoice();
             }
         } else if (e.key === 'Tab') {
@@ -524,12 +577,8 @@ document.addEventListener('keydown', (e) => {
                     }
                 }, 0);
             }
-        } else if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-            e.preventDefault();
-            currentQuery += e.key;
-            activeSuggestionIndex = -1; // Reset selection (will start at first option)
-            updateInputDisplay();
         }
+        // Note: Text input is now handled by the real input element's 'input' event
     } else if (settingsOverlay.classList.contains('open')) {
         // Handle navigation in settings
         if (e.key === 'Tab') {
@@ -554,15 +603,14 @@ document.addEventListener('keydown', (e) => {
             if (focusedBtn && focusedBtn.classList.contains('theme-option')) {
                 applyTheme(focusedBtn.dataset.theme, true);
             }
-        } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'j' || e.key === 'k' ||
-                   e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'h' || e.key === 'l') {
+        } else if (e.key === 'j' || e.key === 'k' || e.key === 'h' || e.key === 'l') {
             e.preventDefault();
             const themeOptions = Array.from(themeList.querySelectorAll('.theme-option'));
             const focused = document.activeElement;
             const currentIndex = themeOptions.indexOf(focused);
 
             let nextIndex;
-            const isUpOrLeft = e.key === 'ArrowUp' || e.key === 'k' || e.key === 'ArrowLeft' || e.key === 'h';
+            const isUpOrLeft = e.key === 'k' || e.key === 'h';
             if (isUpOrLeft) {
                 nextIndex = currentIndex <= 0 ? themeOptions.length - 1 : currentIndex - 1;
             } else {
@@ -606,3 +654,7 @@ commands.addEventListener('click', (e) => {
 loadSettings();
 renderCommands();
 updateInputDisplay();
+
+// Initialize the input as empty and not focused
+realInput.value = '';
+isInputMode = false;

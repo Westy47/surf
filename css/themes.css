@@ -142,3 +142,43 @@
     --primary-dark: #585b70;
     --glow-primary: rgba(203, 166, 247, 0.4);
 }
+
+[data-theme="classic-light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --primary: #2c3e50;
+    --primary-bright: #1a252f;
+    --primary-dim: #6c757d;
+    --primary-dark: #adb5bd;
+    --glow-primary: rgba(44, 62, 80, 0.15);
+}
+
+[data-theme="classic-dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #242424;
+    --primary: #c9d1d9;
+    --primary-bright: #f0f6fc;
+    --primary-dim: #8b949e;
+    --primary-dark: #484f58;
+    --glow-primary: rgba(201, 209, 217, 0.2);
+}
+
+[data-theme="neovim-dark"] {
+    --bg-primary: #0f191f;
+    --bg-secondary: #1a2429;
+    --primary: #a9d5c4;
+    --primary-bright: #5fb950;
+    --primary-dim: #7fb49a;
+    --primary-dark: #3a4b44;
+    --glow-primary: rgba(95, 185, 80, 0.3);
+}
+
+[data-theme="neovim-light"] {
+    --bg-primary: #e7eee8;
+    --bg-secondary: #dde5de;
+    --primary: #29332f;
+    --primary-bright: #195174;
+    --primary-dim: #5a6b5e;
+    --primary-dark: #8a9a8e;
+    --glow-primary: rgba(25, 81, 116, 0.2);
+}

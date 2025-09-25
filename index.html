@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>surf~</title>
-    <link rel="stylesheet" href="css/themes.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="fonts/fonts.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏄</text></svg>"/>
+    <link rel="stylesheet" href="css/themes.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="fonts/fonts.css"/>
 </head>
 <body class="vt323">
 <div class="container">
@@ -19,7 +20,7 @@
         <div class="command-input">
             <div class="command-text">
                 <span class="input-prompt">></span>
-                <span class="input-value" id="inputValue"></span><span class="input-cursor">&#9608;</span>
+                <input type="text" id="realInput" class="real-input" autocomplete="off" spellcheck="false" />
             </div>
             <div class="multiple-choices-list" id="multipleChoicesList"></div>
         </div>
@@ -28,7 +29,7 @@
     </div>
 
     <div class="footer">
-        <span class="key-item">hjkl/arrows/tab</span>: Navigate •
+        <span class="key-item">hjkl/tab</span>: Navigate •
         <span class="key-item">Enter</span>: Execute •
         <span class="key-item">Esc</span>: Clear •
         <span class="key-item">st</span>: Settings
@@ -55,6 +56,10 @@
                     <button class="theme-option" data-theme="catppuccin-mocha" tabindex="0">Catppuccin Mocha</button>
                     <button class="theme-option" data-theme="agrume" tabindex="0">Agrume</button>
                     <button class="theme-option" data-theme="agrume-dark" tabindex="0">Agrume Dark</button>
+                    <button class="theme-option" data-theme="classic-light" tabindex="0">Classic Light</button>
+                    <button class="theme-option" data-theme="classic-dark" tabindex="0">Classic Dark</button>
+                    <button class="theme-option" data-theme="neovim-light" tabindex="0">Neovim Light</button>
+                    <button class="theme-option" data-theme="neovim-dark" tabindex="0">Neovim Dark</button>
                 </div>
             </div>
 
