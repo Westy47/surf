@@ -27,10 +27,11 @@ const CONFIG = {
             { name: 'Archlinux', url: 'https://archlinux.org' }
         ],
         's': [
-            { name: 'Spotify', url: 'https://open.spotify.com/' }
+            { name: 'Tidal', url: 'https://tidal.com/' }
         ],
         'o': [
-            { name: 'Mistral AI', url: 'https://chat.mistral.ai/chat' },
+            { name: 'Claude', url: 'https://claude.ai/new' },
+            { name: 'Mistral', url: 'https://chat.mistral.ai/chat' },
             { name: 'ChatGPT', url: 'https://chat.openai.com/' }
         ],
         'r': [
