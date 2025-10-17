@@ -2,37 +2,6 @@ const CONFIG = {
     defaultSearchTemplate: 'https://duckduckgo.com/?q={}',
     openLinksInNewTab: false,
     shortcuts: {
-        'm': [
-            { name: 'Proton Mail', url: 'https://mail.proton.me/u/0/' },
-            { name: 'Gmail', url: 'https://mail.google.com/mail/u/0/' }
-        ],
-        'c': [
-            { name: 'Proton Calendar', url: 'https://calendar.proton.me/u/0/' },
-            { name: 'Google Calendar', url: 'https://calendar.google.com/calendar/u/0/r' }
-        ],
-        'd': [
-            { name: 'Proton Drive', url: 'https://drive.proton.me/u/0/' },
-            { name: 'Google Drive', url: 'https://drive.google.com/drive/u/0/' }
-        ],
-        'g': [
-            { name: 'GitHub', url: 'https://github.com' }
-        ],
-        'n': [
-            { name: 'Notion', url: 'https://www.notion.so' }
-        ],
-        'l': [
-            { name: 'Linear', url: 'https://linear.app/' }
-        ],
-        'a': [
-            { name: 'Archlinux', url: 'https://archlinux.org' }
-        ],
-        's': [
-            { name: 'Tidal', url: 'https://tidal.com/' }
-        ],
-        'o': [
-            { name: 'Claude', url: 'https://claude.ai/new' },
-            { name: 'Mistral', url: 'https://chat.mistral.ai/chat' },
-            { name: 'ChatGPT', url: 'https://chat.openai.com/' }
         ],
         'r': [
             { name: 'Reddit', url: 'https://www.reddit.com' },
@@ -45,12 +14,6 @@ const CONFIG = {
         ],
         'y': [
             { name: 'YouTube', url: 'https://youtube.com/feed/subscriptions' }
-        ],
-        '0': [
-            { name: 'localhost:3000', url: 'http://localhost:3000' },
-            { name: 'localhost:3030', url: 'http://localhost:3030' },
-            { name: 'localhost:8000', url: 'http://localhost:8000' },
-            { name: 'localhost:8080', url: 'http://localhost:8080' }
         ],
         '?': [
             { name: 'Help', url: 'https://github.com/results-may-vary-org/surf' }
