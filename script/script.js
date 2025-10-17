@@ -3,12 +3,7 @@ const CONFIG = {
     openLinksInNewTab: false,
     shortcuts: {
         'm': [
-            { name: 'Proton Mail', url: 'https://mail.proton.me/u/0/' },
             { name: 'Gmail', url: 'https://mail.google.com/mail/u/0/' }
-        ],
-        'c': [
-            { name: 'Proton Calendar', url: 'https://calendar.proton.me/u/0/' },
-            { name: 'Google Calendar', url: 'https://calendar.google.com/calendar/u/0/r' }
         ],
         'd': [
             { name: 'Proton Drive', url: 'https://drive.proton.me/u/0/' },
