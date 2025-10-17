@@ -2,7 +2,6 @@ const CONFIG = {
     defaultSearchTemplate: 'https://duckduckgo.com/?q={}',
     openLinksInNewTab: false,
     shortcuts: {
-        ],
         'r': [
             { name: 'Reddit', url: 'https://www.reddit.com' },
             { name: 'r/archlinux', url: 'https://www.reddit.com/r/archlinux' },
